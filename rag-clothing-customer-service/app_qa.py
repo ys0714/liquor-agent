@@ -123,7 +123,8 @@ def sidebar_session_manager():
         except ValueError:
             index = 0
 
-        selected = st.sidebar.selectbox(
+        # 使用单选列表而不是下拉框，让会话列表一目了然
+        selected = st.sidebar.radio(
             "选择会话",
             display_sessions,
             index=index,
