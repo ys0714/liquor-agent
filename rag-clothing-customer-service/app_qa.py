@@ -171,6 +171,8 @@ def sidebar_session_manager():
         else:
             st.session_state.current_session_id = new_session_id()
         st.sidebar.success(f"已删除会话：{to_delete}")
+        # 重新运行一次脚本，让会话列表基于最新文件列表刷新
+        st.rerun()
 
 
 def render_chat_messages(session_id: str):
