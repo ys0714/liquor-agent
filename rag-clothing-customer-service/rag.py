@@ -167,20 +167,23 @@ class RagService(object):
         
         inputs_mapping = {
             # 提取用户问题字符串，用于 prompt 模板的 {input}
-            "input": RunnableLambda(extract_input_field) \
-                    | debug_runnable("inputs_mapping.input", pretty=True),
+            # "input": RunnableLambda(extract_input_field) \
+            #         | debug_runnable("inputs_mapping.input", pretty=True),
+            "input": RunnableLambda(extract_input_field),
             # retriever | format_document: 先用向量检索器查相关文档，再格式化成一段文本
             # 在 retriever 前后、format_document 后分别加上 debug_runnable
-            "context": debug_runnable("inputs_mapping.context.before_retriever", pretty=True) \
-                       | RunnableLambda(extract_input_field) \
-                       | debug_runnable("inputs_mapping.context.after_extract_input") \
-                       | retriever \
-                       | debug_runnable("inputs_mapping.context.after_retriever", pretty=True) \
-                       | format_document \
-                       | debug_runnable("inputs_mapping.context.after_format_document"),
+            # "context": debug_runnable("inputs_mapping.context.before_retriever", pretty=True) \
+            #            | RunnableLambda(extract_input_field) \
+            #            | debug_runnable("inputs_mapping.context.after_extract_input") \
+            #            | retriever \
+            #            | debug_runnable("inputs_mapping.context.after_retriever", pretty=True) \
+            #            | format_document \
+            #            | debug_runnable("inputs_mapping.context.after_format_document"),
+            "context": RunnableLambda(extract_input_field) | retriever | format_document,
             # 保留 history 字段，传递给 prompt 模板
-            "history": RunnableLambda(extract_history) \
-                      | debug_runnable("inputs_mapping.history", pretty=True),
+            # "history": RunnableLambda(extract_history) \
+            #           | debug_runnable("inputs_mapping.history", pretty=True),
+            "history": RunnableLambda(extract_history),
         }
 
         # 2. 完整链：
@@ -191,17 +194,17 @@ class RagService(object):
         #      -> chat_model 调用大模型
         #      -> StrOutputParser() 把大模型输出转成纯字符串
         rag_chain = (
-            debug_runnable("chain.input", pretty=True)               # 整个链最开始的原始输入
-            | inputs_mapping
-            | debug_runnable("chain.after_inputs_mapping", pretty=True)  # dict: {"input": ..., "context": ...}
+            # debug_runnable("chain.input", pretty=True)               # 整个链最开始的原始输入
+            inputs_mapping
+            # | debug_runnable("chain.after_inputs_mapping", pretty=True)  # dict: {"input": ..., "context": ...}
             | self.prompt_template
-            | debug_runnable("chain.after_prompt_template")  # ChatPrompt
-            | print_prompt                                  # 已有的 prompt 打印
-            | debug_runnable("chain.after_print_prompt")    # 打印后的 prompt（同上）
+            # | debug_runnable("chain.after_prompt_template")  # ChatPrompt
+            # | print_prompt                                  # 已有的 prompt 打印
+            # | debug_runnable("chain.after_print_prompt")    # 打印后的 prompt（同上）
             | self.chat_model
-            | debug_runnable("chain.after_chat_model")      # LLM 输出（通常是 Message/ChatResult）
+            # | debug_runnable("chain.after_chat_model")      # LLM 输出（通常是 Message/ChatResult）
             | StrOutputParser()
-            | debug_runnable("chain.after_output_parser")   # 最终字符串输出
+            # | debug_runnable("chain.after_output_parser")   # 最终字符串输出
         )
         return rag_chain
 
