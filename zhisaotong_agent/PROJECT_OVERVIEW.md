@@ -44,7 +44,7 @@ zhisaotong_agent/
   │  ├─ config_handler.py       # 配置文件读写与合并
   │  ├─ file_handler.py         # 文件加载、遍历与编码处理
   │  ├─ logger_handler.py       # 日志封装
-  │  ├─ path_tools.py            # 路径拼接与项目根路径管理
+  │  ├─ path_tool.py            # 路径拼接与项目根路径管理
   │  └─ prompt_loader.py        # 提示词文件加载工具
   │
   ├─ app.py                     # Streamlit 或 Web 接口入口（对接前端页面）
