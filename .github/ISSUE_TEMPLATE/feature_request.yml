@@ -8,6 +8,20 @@ body:
       value: |
         感谢您提出功能建议！请详细描述您希望添加的功能或改进。
 
+  - type: dropdown
+    id: module
+    attributes:
+      label: 相关模块
+      description: 这个功能请求主要针对哪个模块？
+      options:
+        - 📚 模块一：LangChain 基础学习（AI_LLM_RAG_Agent_Dev）
+        - 🔍 模块二：RAG 实战项目（rag-clothing-customer-service）
+        - 🤖 模块三：Agent 实战项目（zhisaotong_agent）
+        - 🔀 跨模块功能（涉及多个模块）
+        - ❓ 不确定 / 其他
+    validations:
+      required: true
+
   - type: textarea
     id: feature-description
     attributes:
