@@ -83,6 +83,9 @@ All source code and examples are my own notes and practice code, not the officia
     Persisted Chroma vector store files.
   - **`chat_history/`**：会话历史文件目录，每个用户会话对应一个以 `session_id` 命名的 JSON 文件  
     Directory containing per-session JSON chat history files identified by `session_id`.
+  <img width="1509" height="1383" alt="image" src="https://github.com/user-attachments/assets/7aa885bc-5c6a-4f73-80e4-ecf1ef194491" />
+  <img width="2136" height="1371" alt="image" src="https://github.com/user-attachments/assets/03ba3566-d21c-430e-8d2a-4de34476a8be" />
+
 
 ## 环境与运行 Environment & How to Run
 
