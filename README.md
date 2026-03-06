@@ -77,6 +77,23 @@ All source code and examples are my own notes and practice code, not the officia
     Helper script to start the QA Streamlit app (`app_qa.py`) on `0.0.0.0:8501` inside Devbox.
   - **`run_app.sh`**：一键启动知识库上传页面（`app_file_uploader.py`），同样监听 `0.0.0.0:8501`  
     Helper script to start the knowledge-base uploader app (`app_file_uploader.py`) on `0.0.0.0:8501`.
+  - **`run_qa.bat` / `run_app.bat`**：Windows 平台一键启动脚本，假设当前终端已在合适的 Python 环境中（如已手动 `conda activate` 或激活虚拟环境），内部仅做目录切换并执行：  
+    Windows helper scripts to start the QA / uploader Streamlit apps, assuming the correct Python environment has already been activated in the current terminal, simply running:
+
+    ```bash
+    # 问答页面 / QA app
+    cd rag-clothing-customer-service
+    python -m streamlit run app_qa.py --server.address 0.0.0.0 --server.port 8501
+
+    # 知识库上传页面 / uploader app
+    cd rag-clothing-customer-service
+    python -m streamlit run app_file_uploader.py --server.address 0.0.0.0 --server.port 8501
+    ```
+
+  - **Python 版本注意事项（`rag-clothing-customer-service` 子项目）**  
+    **请使用 Python 3.10–3.12 运行本子项目，暂不推荐 3.14 及更高版本。**  
+    由于 `chromadb==1.4.1` 依赖的 `pydantic.v1` 当前在 Python 3.14+ 上存在兼容性问题（例如无法正确初始化配置类 `Settings`），
+    会导致启动 Streamlit 应用时报错；在 3.10–3.12 环境下已完整验证可以正常工作。
   - **`data/`**：原始知识库文档存放目录（如尺码推荐、洗涤养护说明等）  
     Directory for original knowledge base documents (size guides, washing instructions, etc.).
   - **`chroma_db/`**：Chroma 向量库持久化目录，用于存放已向量化后的文档数据  

@@ -31,6 +31,8 @@ venv/
 ENV/
 env/
 .venv
+# Conda 本地环境（放在项目目录下）
+.conda-*/
 bin/
 include/
 pyvenv.cfg
