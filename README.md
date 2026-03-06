@@ -23,7 +23,7 @@ All source code and examples are my own notes and practice code, not the officia
   - **`08_Lottery_Information_Extraction.py`**：彩票信息抽取实战案例（Lottery information extraction demo.）
   - **`09_Text_Matching_FewShot.py`**：文本匹配 / 相似度少样本示例（Few-shot text matching examples.）
   - **`10_Cosine_Similarity_Algorithm.py`**：余弦相似度算法与向量检索基础（Cosine similarity and basic vector search.）
-  - **`11_LangChain_Tongyi_Basic_Usage.py`**：LangChain + 通义 千问 基础用法（Basic LangChain usage with Tongyi Qianwen.）
+  - **`11_LangChain_Tongyi_Basic_Usage.py`**：LangChain + 通义千问 基础用法（Basic LangChain usage with Tongyi Qianwen.）
   - **`12_LangChain_Tongyi_Stream_Output.py`**：LangChain 流式输出示例（Streaming with LangChain and Tongyi.）
   - **`13_LangChain_Tongyi_Chat_Model.py`**：LangChain ChatModel 配置与调用（Using LangChain chat models.）
   - **`14_LangChain_Message_Shorthand.py`**：LangChain 消息对象与简写语法（LangChain message classes and shorthand syntax.）
@@ -77,23 +77,6 @@ All source code and examples are my own notes and practice code, not the officia
     Helper script to start the QA Streamlit app (`app_qa.py`) on `0.0.0.0:8501` inside Devbox.
   - **`run_app.sh`**：一键启动知识库上传页面（`app_file_uploader.py`），同样监听 `0.0.0.0:8501`  
     Helper script to start the knowledge-base uploader app (`app_file_uploader.py`) on `0.0.0.0:8501`.
-  - **`run_qa.bat` / `run_app.bat`**：Windows 平台一键启动脚本，假设当前终端已在合适的 Python 环境中（如已手动 `conda activate` 或激活虚拟环境），内部仅做目录切换并执行：  
-    Windows helper scripts to start the QA / uploader Streamlit apps, assuming the correct Python environment has already been activated in the current terminal, simply running:
-
-    ```bash
-    # 问答页面 / QA app
-    cd rag-clothing-customer-service
-    python -m streamlit run app_qa.py --server.address 0.0.0.0 --server.port 8501
-
-    # 知识库上传页面 / uploader app
-    cd rag-clothing-customer-service
-    python -m streamlit run app_file_uploader.py --server.address 0.0.0.0 --server.port 8501
-    ```
-
-  - **Python 版本注意事项（`rag-clothing-customer-service` 子项目）**  
-    **请使用 Python 3.10–3.12 运行本子项目，暂不推荐 3.14 及更高版本。**  
-    由于 `chromadb==1.4.1` 依赖的 `pydantic.v1` 当前在 Python 3.14+ 上存在兼容性问题（例如无法正确初始化配置类 `Settings`），
-    会导致启动 Streamlit 应用时报错；在 3.10–3.12 环境下已完整验证可以正常工作。
   - **`data/`**：原始知识库文档存放目录（如尺码推荐、洗涤养护说明等）  
     Directory for original knowledge base documents (size guides, washing instructions, etc.).
   - **`chroma_db/`**：Chroma 向量库持久化目录，用于存放已向量化后的文档数据  
@@ -107,12 +90,12 @@ All source code and examples are my own notes and practice code, not the officia
 ## 环境与运行 Environment & How to Run
 
 - **运行环境 Environment**
-  - 基于 Devbox 提供的 Debian 12 + Python 开发环境。  
-    Based on Devbox environment (Debian 12 with Python pre-configured).
-  - 本项目在 **Python 3.12** 环境下开发与测试，推荐使用 **Python 3.10–3.12** 版本运行。  
-    This project is developed and tested with **Python 3.12**; it is recommended to use **Python 3.10–3.12**.
-  - 需要自行配置对应的大模型平台 API Key（如 OpenAI、阿里云通义等）。  
-    You need to configure your own API keys for LLM providers (OpenAI, Tongyi, etc.).
+  - 已在 **Linux（Debian 12）** 和 **Windows 10/11（原生环境）** 上实际跑通本仓库中的示例与 RAG 子项目。  
+    All examples and the RAG sub‑project have been tested on **Linux (Debian 12)** and **Windows 10/11 (native)**.
+  - 推荐使用 **Python 3.10–3.12** 版本运行（开发与主要测试环境为 Python 3.12）。  
+    It is recommended to use **Python 3.10–3.12** (developed and mainly tested with Python 3.12).
+  - 需要自行配置对应的大模型平台 API Key（目前示例多基于阿里云通义 / DashScope，部分通用示例脚本也支持 OpenAI 等）。  
+    You need to configure your own API keys for LLM providers (most examples focus on Alibaba Cloud Tongyi/DashScope; some generic demo scripts also support OpenAI, etc.).
 
 - **配置环境变量 Configure Environment Variables**
   - 项目使用 `.env` 文件来管理 API Key 等敏感配置信息。  
@@ -144,8 +127,8 @@ All source code and examples are my own notes and practice code, not the officia
       `.env` file is in `.gitignore` and will not be committed to the repository, so you can safely add your real API keys.
     - **重要：本项目仅支持阿里云 DashScope API Key**  
       **Important: This project only supports Alibaba Cloud DashScope API Key**
-      - 项目代码会优先读取 `DASHSCOPE_API_KEY`，如果未设置则回退到 `API_KEY`。  
-        The code will first try to read `DASHSCOPE_API_KEY`, and fall back to `API_KEY` if not set.
+    - 项目代码会优先读取 `DASHSCOPE_API_KEY`，如果未设置则回退到 `API_KEY`。  
+      The code will first try to read `DASHSCOPE_API_KEY`, and fall back to `API_KEY` if not set.
       - **即使使用 `API_KEY` 作为变量名，也必须填入阿里云 DashScope 的 API Key，而不是 OpenAI 的 API Key。**  
         **Even if you use `API_KEY` as the variable name, you must fill in Alibaba Cloud DashScope API Key, NOT OpenAI API Key.**
       - 本项目使用 `DashScopeEmbeddings` 和 `ChatTongyi`（通义千问），不支持 OpenAI 模型。  
@@ -159,15 +142,17 @@ All source code and examples are my own notes and practice code, not the officia
 pip install -r requirements.txt
 ```
 
-### Windows 使用说明 (Windows Notes)
-
-- 本项目目前**只在 Linux（Debian 12）环境下完整跑通过**，**未在原生 Windows 上系统性测试**。  
-- 如果你在 Windows 上尝试运行，推荐优先使用 **WSL2 / Docker / Linux 虚拟机**，并根据自身环境做适当调整。  
-- 如在 Windows 上遇到环境相关问题，欢迎提 Issue 反馈。  
-
 - **运行方式 How to Run**
-  - 进入 Devbox 开发环境后，可直接运行单个示例脚本，例如：  
-    After entering the Devbox environment, you can run any script directly, e.g.:
+  - 克隆本仓库后，在项目根目录下运行任意示例脚本，例如：  
+    After cloning this repo, from the project root you can run any example script, e.g.:
+
+```bash
+cd /path/to/your/HeiMa-AI-LLM-RAG-Agent-Dev
+python AI_LLM_RAG_Agent_Dev/11_LangChain_Tongyi_Basic_Usage.py
+```
+
+  - 如果你使用的是本仓库同款 Devbox 环境（路径通常为 `/home/devbox/project`），可以使用下面的命令：  
+    If you are using the same Devbox environment as this repo (usually at `/home/devbox/project`), you can run:
 
 ```bash
 cd /home/devbox/project/AI_LLM_RAG_Agent_Dev
