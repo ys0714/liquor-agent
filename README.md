@@ -5,6 +5,56 @@
 对应视频链接（bilibili）：[`https://www.bilibili.com/video/BV1yjz5BLEoY`](https://www.bilibili.com/video/BV1yjz5BLEoY)  
 所有代码与示例均为本人学习过程中的实践与笔记整理，不是官方代码仓库。
 
+
+## 环境与运行 Environment & How to Run
+
+- **运行环境 Environment**
+  - uv创建虚拟环境（python 3.12），安装requirements.txt依赖
+    1. uv venv .venv-agent --python 3.12
+    2. 
+      ```bash
+      pip install -r requirements.txt
+      ```
+  - 下载ollama https://ollama.com/
+  - 修改.env中MODEL为ollama对应的已下载MODEL模型名称（当前 MODEL=gemma3:1b）
+- **配置环境变量 Configure Environment Variables**
+  - 项目使用 `.env` 文件来管理 API Key 等敏感配置信息。  
+    The project uses `.env` file to manage sensitive configuration like API keys.
+  - **步骤 Steps:**
+    1. 复制示例配置文件：`cp .env.example .env`  
+       Copy the example config file: `cp .env.example .env`
+    2. 编辑 `.env` 文件，将占位符替换为你的真实 API Key：  
+       Edit `.env` file and replace placeholders with your actual API keys:
+       ```bash
+       # 阿里云 DashScope API Key（推荐）
+       # Alibaba Cloud DashScope API Key (Recommended)
+       DASHSCOPE_API_KEY=your_dashscope_api_key_here
+       
+       # 或使用通用 API_KEY（兼容性选项）
+       # Or use generic API_KEY (compatibility option)
+       API_KEY=your_api_key_here
+       ```
+    3. **获取阿里云 DashScope API Key：**  
+       **How to get Alibaba Cloud DashScope API Key:**
+       - 登录 [阿里云控制台](https://home.console.aliyun.com/)  
+         Login to [Alibaba Cloud Console](https://home.console.aliyun.com/)
+       - 开通 DashScope 服务并创建 API Key  
+         Enable DashScope service and create an API Key
+       - 详细文档：[DashScope API Key 创建指南](https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-create-an-api-key)  
+         Documentation: [DashScope API Key Creation Guide](https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-create-an-api-key)
+  - **注意 Note:**
+    - `.env` 文件已添加到 `.gitignore`，不会被提交到版本库，请放心填写真实密钥。  
+      `.env` file is in `.gitignore` and will not be committed to the repository, so you can safely add your real API keys.
+    - **重要：本项目仅支持阿里云 DashScope API Key**  
+      **Important: This project only supports Alibaba Cloud DashScope API Key**
+    - 项目代码会优先读取 `DASHSCOPE_API_KEY`，如果未设置则回退到 `API_KEY`。  
+      The code will first try to read `DASHSCOPE_API_KEY`, and fall back to `API_KEY` if not set.
+      - **即使使用 `API_KEY` 作为变量名，也必须填入阿里云 DashScope 的 API Key，而不是 OpenAI 的 API Key。**  
+        **Even if you use `API_KEY` as the variable name, you must fill in Alibaba Cloud DashScope API Key, NOT OpenAI API Key.**
+      - 本项目使用 `DashScopeEmbeddings` 和 `ChatTongyi`（通义千问），不支持 OpenAI 模型。  
+        This project uses `DashScopeEmbeddings` and `ChatTongyi` (Tongyi Qianwen), and does not support OpenAI models.
+
+
 ## 目录结构 Directory Structure
 
 - **`AI_LLM_RAG_Agent_Dev/`**：课程相关代码与练习（个人笔记）
@@ -80,53 +130,3 @@
     Directory containing per-session JSON chat history files identified by `session_id`.
     <img width="1509" height="1383" alt="image" src="https://github.com/user-attachments/assets/7aa885bc-5c6a-4f73-80e4-ecf1ef194491" />
     <img width="2136" height="1371" alt="image" src="https://github.com/user-attachments/assets/03ba3566-d21c-430e-8d2a-4de34476a8be" />
-
-
-## 环境与运行 Environment & How to Run
-
-- **运行环境 Environment**
-  - uv创建虚拟环境（python 3.12），安装requirements.txt依赖
-    1. uv venv .venv-agent --python 3.12
-    2. 
-      ```bash
-      pip install -r requirements.txt
-      ```
-  - 下载ollama https://ollama.com/
-  - 修改.env中MODEL为ollama对应的已下载MODEL模型名称（当前 MODEL=gemma3:1b）
-- **配置环境变量 Configure Environment Variables**
-  - 项目使用 `.env` 文件来管理 API Key 等敏感配置信息。  
-    The project uses `.env` file to manage sensitive configuration like API keys.
-  - **步骤 Steps:**
-    1. 复制示例配置文件：`cp .env.example .env`  
-       Copy the example config file: `cp .env.example .env`
-    2. 编辑 `.env` 文件，将占位符替换为你的真实 API Key：  
-       Edit `.env` file and replace placeholders with your actual API keys:
-       ```bash
-       # 阿里云 DashScope API Key（推荐）
-       # Alibaba Cloud DashScope API Key (Recommended)
-       DASHSCOPE_API_KEY=your_dashscope_api_key_here
-       
-       # 或使用通用 API_KEY（兼容性选项）
-       # Or use generic API_KEY (compatibility option)
-       API_KEY=your_api_key_here
-       ```
-    3. **获取阿里云 DashScope API Key：**  
-       **How to get Alibaba Cloud DashScope API Key:**
-       - 登录 [阿里云控制台](https://home.console.aliyun.com/)  
-         Login to [Alibaba Cloud Console](https://home.console.aliyun.com/)
-       - 开通 DashScope 服务并创建 API Key  
-         Enable DashScope service and create an API Key
-       - 详细文档：[DashScope API Key 创建指南](https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-create-an-api-key)  
-         Documentation: [DashScope API Key Creation Guide](https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-create-an-api-key)
-  - **注意 Note:**
-    - `.env` 文件已添加到 `.gitignore`，不会被提交到版本库，请放心填写真实密钥。  
-      `.env` file is in `.gitignore` and will not be committed to the repository, so you can safely add your real API keys.
-    - **重要：本项目仅支持阿里云 DashScope API Key**  
-      **Important: This project only supports Alibaba Cloud DashScope API Key**
-    - 项目代码会优先读取 `DASHSCOPE_API_KEY`，如果未设置则回退到 `API_KEY`。  
-      The code will first try to read `DASHSCOPE_API_KEY`, and fall back to `API_KEY` if not set.
-      - **即使使用 `API_KEY` 作为变量名，也必须填入阿里云 DashScope 的 API Key，而不是 OpenAI 的 API Key。**  
-        **Even if you use `API_KEY` as the variable name, you must fill in Alibaba Cloud DashScope API Key, NOT OpenAI API Key.**
-      - 本项目使用 `DashScopeEmbeddings` 和 `ChatTongyi`（通义千问），不支持 OpenAI 模型。  
-        This project uses `DashScopeEmbeddings` and `ChatTongyi` (Tongyi Qianwen), and does not support OpenAI models.
-
