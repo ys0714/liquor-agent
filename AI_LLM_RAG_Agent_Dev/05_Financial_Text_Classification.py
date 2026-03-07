@@ -20,7 +20,7 @@ def main():
     # 2. 初始化客户端
     client = OpenAI(
         api_key=api_key,
-        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        base_url= os.getenv("BASE_URL"),
     )
 
     # 3. 构建 FewShot 示例和任务说明
@@ -82,7 +82,7 @@ def main():
 
         # 发送请求
         completion = client.chat.completions.create(
-            model="qwen3-max",
+            model= os.getenv("MODEL"),
             messages=messages,
             stream=False,
         )

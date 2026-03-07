@@ -8,10 +8,10 @@ load_dotenv()
 client = OpenAI(
     # 从环境变量中读取 API Key
     api_key=os.getenv("API_KEY"),
-    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+    base_url="http://localhost:11434/v1/",
 )
 completion = client.chat.completions.create(
-    model="qwen3-max",
+    model="gemma3:1b",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "你是谁？"},

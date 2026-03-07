@@ -20,7 +20,7 @@ def main():
     # 2. 初始化客户端（兼容阿里云 DashScope 的 OpenAI 模式）
     client = OpenAI(
         api_key=api_key,
-        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        base_url= os.getenv("BASE_URL"),
     )
     # 也可以使用本地模型：base_url="http://localhost:11434/v1"
     
@@ -115,7 +115,7 @@ def main():
         
         # 调用 API
         response = client.chat.completions.create(
-            model="qwen3-max",
+            model= os.getenv("MODEL"),
             messages=current_messages
         )
         

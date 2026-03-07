@@ -5,11 +5,6 @@
 对应视频链接（bilibili）：[`https://www.bilibili.com/video/BV1yjz5BLEoY`](https://www.bilibili.com/video/BV1yjz5BLEoY)  
 所有代码与示例均为本人学习过程中的实践与笔记整理，不是官方代码仓库。
 
-This repository is a personal learning project based on the Bilibili course by HeiMa:  
-**“Large Language Model RAG & Agent Practical Projects with LangChain – From Prompt Engineering to Real-World Applications”**  
-Video link (Bilibili): [`https://www.bilibili.com/video/BV1yjz5BLEoY`](https://www.bilibili.com/video/BV1yjz5BLEoY).  
-All source code and examples are my own notes and practice code, not the official course repo.
-
 ## 目录结构 Directory Structure
 
 - **`AI_LLM_RAG_Agent_Dev/`**：课程相关代码与练习（个人笔记）
@@ -90,13 +85,14 @@ All source code and examples are my own notes and practice code, not the officia
 ## 环境与运行 Environment & How to Run
 
 - **运行环境 Environment**
-  - 已在 **Linux（Debian 12）** 和 **Windows 10/11（原生环境）** 上实际跑通本仓库中的示例与 RAG 子项目。  
-    All examples and the RAG sub‑project have been tested on **Linux (Debian 12)** and **Windows 10/11 (native)**.
-  - 推荐使用 **Python 3.10–3.12** 版本运行（开发与主要测试环境为 Python 3.12）。  
-    It is recommended to use **Python 3.10–3.12** (developed and mainly tested with Python 3.12).
-  - 需要自行配置对应的大模型平台 API Key（目前示例多基于阿里云通义 / DashScope，部分通用示例脚本也支持 OpenAI 等）。  
-    You need to configure your own API keys for LLM providers (most examples focus on Alibaba Cloud Tongyi/DashScope; some generic demo scripts also support OpenAI, etc.).
-
+  - uv创建虚拟环境（python 3.12），安装requirements.txt依赖
+    1. uv venv .venv-agent --python 3.12
+    2. 
+      ```bash
+      pip install -r requirements.txt
+      ```
+  - 下载ollama https://ollama.com/
+  - 修改.env中MODEL为ollama对应的已下载MODEL模型名称（当前 MODEL=gemma3:1b）
 - **配置环境变量 Configure Environment Variables**
   - 项目使用 `.env` 文件来管理 API Key 等敏感配置信息。  
     The project uses `.env` file to manage sensitive configuration like API keys.
@@ -133,38 +129,4 @@ All source code and examples are my own notes and practice code, not the officia
         **Even if you use `API_KEY` as the variable name, you must fill in Alibaba Cloud DashScope API Key, NOT OpenAI API Key.**
       - 本项目使用 `DashScopeEmbeddings` 和 `ChatTongyi`（通义千问），不支持 OpenAI 模型。  
         This project uses `DashScopeEmbeddings` and `ChatTongyi` (Tongyi Qianwen), and does not support OpenAI models.
-
-- **安装依赖 Install Dependencies**
-  - 首次使用前，请先安装项目所需的 Python 依赖包：  
-    Before running any scripts, please install the required Python packages:
-  
-```bash
-pip install -r requirements.txt
-```
-
-- **运行方式 How to Run**
-  - 克隆本仓库后，在项目根目录下运行任意示例脚本，例如：  
-    After cloning this repo, from the project root you can run any example script, e.g.:
-
-```bash
-cd /path/to/your/HeiMa-AI-LLM-RAG-Agent-Dev
-python AI_LLM_RAG_Agent_Dev/11_LangChain_Tongyi_Basic_Usage.py
-```
-
-  - 如果你使用的是本仓库同款 Devbox 环境（路径通常为 `/home/devbox/project`），可以使用下面的命令：  
-    If you are using the same Devbox environment as this repo (usually at `/home/devbox/project`), you can run:
-
-```bash
-cd /home/devbox/project/AI_LLM_RAG_Agent_Dev
-python 11_LangChain_Tongyi_Basic_Usage.py
-```
-
-## 声明与目的 Disclaimer & Purpose
-
-- **学习用途**：本仓库仅用于个人学习与笔记整理，无任何商业用途。  
-  **For learning only**: This repository is for personal study and note-taking, not for commercial use.
-- **非官方代码**：本项目与黑马程序员、课程官方无直接关联，仅参考其公开课程内容进行实践。  
-  **Not official**: This is not an official repository of the HeiMa course; it is only inspired by and based on the public videos.
-- **欢迎扩展**：你可以在此基础上继续扩展自己的 RAG / Agent 实战项目与实验。  
-  **Feel free to extend**: You are welcome to build your own RAG and Agent experiments on top of this repo.
 

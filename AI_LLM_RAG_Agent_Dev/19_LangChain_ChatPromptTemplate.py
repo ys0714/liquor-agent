@@ -49,7 +49,7 @@ def init_chat_model() -> ChatTongyi:
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
     # 使用 qwen3-max 聊天模型
-    chat = ChatTongyi(model="qwen3-max")
+    chat = ChatTongyi(model= os.getenv("MODEL"))
     return chat
 
 
