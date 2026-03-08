@@ -1,8 +1,10 @@
 from vector_stores import VectorStoreService
-from langchain_community.embeddings import DashScopeEmbeddings
+import os
+
+from langchain_ollama import OllamaEmbeddings
 import config_data as config
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.runnables import RunnablePassthrough, RunnableLambda
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.output_parsers import StrOutputParser
@@ -122,7 +124,10 @@ class RagService(object):
         if storage_path is None:
             storage_path = config.chat_history_path
         self.vector_service = VectorStoreService(
-            embedding=DashScopeEmbeddings(model=config.embedding_model_name)
+            embedding=OllamaEmbeddings(
+                model=os.getenv("EMBEDDING_MODEL", "embeddinggemma:latest"),
+                base_url=os.getenv("EMBEDDING_BASE_URL"),
+            )
         )
         self.prompt_template = ChatPromptTemplate.from_messages(
             [
@@ -132,7 +137,7 @@ class RagService(object):
                 ("user", "请回答用户提问:{input}")
             ]
         )
-        self.chat_model = ChatTongyi(model=config.chat_model_name)
+        self.chat_model = ChatOllama(model=config.chat_model_name)
         self.storage_path = storage_path
 
     def _get_chain(self):

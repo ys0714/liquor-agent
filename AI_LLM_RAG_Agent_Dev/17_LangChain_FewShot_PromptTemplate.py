@@ -49,7 +49,7 @@ def init_llm() -> Tongyi:
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
     # 与课件及其他示例保持一致，使用 qwen-max 模型
-    llm = Tongyi(model="qwen-max")
+    llm = Tongyi(model= os.getenv("MODEL"))
     return llm
 
 
@@ -59,9 +59,9 @@ def demo_antonym_fewshot(llm: Tongyi) -> None:
 
     通过提供几个「词-反义词」的示例，让模型学习模式并推断新词的反义词。
     """
-    print("=" * 80)
+    
     print("【示例1】反义词推断：FewShot 提示词模板")
-    print("-" * 80)
+    
 
     # Step 1: 定义示例数据的模板
     # 这个模板用于格式化每个示例，将示例数据中的 word 和 antonym 填入
@@ -103,7 +103,7 @@ def demo_antonym_fewshot(llm: Tongyi) -> None:
     print()
 
     # 也可以直接使用 chain 的方式
-    print("-" * 80)
+    
     print("使用 Chain 方式（FewShotPromptTemplate | LLM）：\n")
     chain = few_shot_prompt | llm
     res2 = chain.invoke(input={"input_word1": "高大", "input_word2": "娴熟"})
@@ -118,9 +118,9 @@ def demo_sentiment_analysis_fewshot(llm: Tongyi) -> None:
 
     通过提供几个「文本-情感」的示例，让模型学习模式并分析新文本的情感倾向。
     """
-    print("=" * 80)
+    
     print("【示例2】情感分析：FewShot 提示词模板")
-    print("-" * 80)
+    
 
     # Step 1: 定义示例数据的模板
     example_template = PromptTemplate.from_template(
@@ -163,9 +163,9 @@ def demo_fewshot_parameters_explanation() -> None:
     """
     解释 FewShotPromptTemplate 各个参数的作用。
     """
-    print("=" * 80)
+    
     print("【FewShotPromptTemplate 参数说明】")
-    print("=" * 80)
+    
     print()
     print("FewShotPromptTemplate 的主要参数：")
     print()
@@ -197,7 +197,7 @@ def demo_fewshot_parameters_explanation() -> None:
     print("最终提示词的组装顺序：")
     print("  prefix + (example_prompt 格式化后的示例1) + (example_prompt 格式化后的示例2) + ... + suffix")
     print()
-    print("=" * 80)
+    
     print()
 
 
@@ -205,9 +205,9 @@ def main() -> None:
     """
     主函数：演示 LangChain 中 FewShotPromptTemplate 的用法。
     """
-    print("=" * 80)
+    
     print("LangChain FewShot 提示词模板（FewShotPromptTemplate）用法示例")
-    print("=" * 80)
+    
     print()
 
     # 参数说明
@@ -222,9 +222,9 @@ def main() -> None:
     # 示例2：情感分析
     demo_sentiment_analysis_fewshot(llm)
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

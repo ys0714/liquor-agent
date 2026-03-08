@@ -20,14 +20,14 @@ LangChain 聊天提示词模板（ChatPromptTemplate）示例
 import os
 
 from dotenv import load_dotenv
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -44,12 +44,12 @@ def init_chat_model() -> ChatTongyi:
             "未找到 DASHSCOPE_API_KEY 或 API_KEY 环境变量，请先在 .env 或系统环境中配置后再运行。"
         )
 
-    # LangChain 的 ChatTongyi 封装会自动从环境变量中读取 key，
+    # LangChain 的 ChatOllama 封装会自动从环境变量中读取 key，
     # 这里设置一份到 DASHSCOPE_API_KEY，确保兼容性。
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
     # 使用 qwen3-max 聊天模型
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -76,13 +76,13 @@ def build_chat_prompt_template() -> ChatPromptTemplate:
     return chat_template
 
 
-def demo_basic_chat_prompt_template(chat: ChatTongyi) -> None:
+def demo_basic_chat_prompt_template(chat: ChatOllama) -> None:
     """
     演示基本的 ChatPromptTemplate 使用，不包含历史会话。
     """
-    print("=" * 80)
+    
     print("【示例1】基本的 ChatPromptTemplate 使用（无历史会话）")
-    print("=" * 80)
+    
 
     # 构建简单的聊天提示词模板（不包含 MessagesPlaceholder）
     simple_template = ChatPromptTemplate.from_messages(
@@ -104,23 +104,23 @@ def demo_basic_chat_prompt_template(chat: ChatTongyi) -> None:
             print(f"  {i}. [用户] {msg.content}")
 
     print("\n模型回复（流式输出）：")
-    print("-" * 80)
+    
     for chunk in chat.stream(input=messages):
         print(chunk.content, end="", flush=True)
     print("\n")
-    print("-" * 80)
+    
     print()
 
 
-def demo_messages_placeholder_with_invoke(chat: ChatTongyi) -> None:
+def demo_messages_placeholder_with_invoke(chat: ChatOllama) -> None:
     """
     演示使用 MessagesPlaceholder 和 invoke 方法动态注入历史会话记录。
 
     这是图片中展示的核心示例。
     """
-    print("=" * 80)
+    
     print("【示例2】使用 MessagesPlaceholder 和 invoke 动态注入历史会话")
-    print("=" * 80)
+    
 
     # 构建包含 MessagesPlaceholder 的聊天提示词模板
     chat_template = build_chat_prompt_template()
@@ -156,23 +156,23 @@ def demo_messages_placeholder_with_invoke(chat: ChatTongyi) -> None:
             print(f"  {i}. [AI] {msg.content}")
 
     print("\n模型回复（流式输出）：")
-    print("-" * 80)
+    
     for chunk in chat.stream(input=messages):
         print(chunk.content, end="", flush=True)
     print("\n")
-    print("-" * 80)
+    
     print()
 
 
-def demo_dynamic_history_injection(chat: ChatTongyi) -> None:
+def demo_dynamic_history_injection(chat: ChatOllama) -> None:
     """
     演示动态历史会话注入：展示历史会话如何随着对话进行而累积。
 
     这个示例模拟了多轮对话的场景，每次对话都会将新的消息添加到历史中。
     """
-    print("=" * 80)
+    
     print("【示例3】动态历史会话注入：模拟多轮对话")
-    print("=" * 80)
+    
 
     chat_template = build_chat_prompt_template()
 
@@ -231,7 +231,7 @@ def demo_dynamic_history_injection(chat: ChatTongyi) -> None:
     print("\n")
 
     print("\n最终历史会话记录数：", len(history_data))
-    print("-" * 80)
+    
     print()
 
 
@@ -239,9 +239,9 @@ def demo_format_vs_invoke() -> None:
     """
     演示 format 与 invoke 的区别，强调 format 无法注入 MessagesPlaceholder。
     """
-    print("=" * 80)
+    
     print("【示例4】format vs invoke：为什么必须使用 invoke")
-    print("=" * 80)
+    
 
     chat_template = build_chat_prompt_template()
     history_data = [
@@ -279,17 +279,17 @@ def demo_format_vs_invoke() -> None:
     print("   • MessagesPlaceholder 必须使用 invoke 方法才能注入数据")
     print("   • format 方法只能处理字符串占位符，无法处理 MessagesPlaceholder")
     print("   • 历史会话信息是动态的，需要动态注入，所以必须使用 invoke")
-    print("-" * 80)
+    
     print()
 
 
-def demo_message_objects_vs_tuples(chat: ChatTongyi) -> None:
+def demo_message_objects_vs_tuples(chat: ChatOllama) -> None:
     """
     演示历史会话数据可以使用消息对象格式或元组格式。
     """
-    print("=" * 80)
+    
     print("【示例5】历史会话数据格式：消息对象 vs 元组")
-    print("=" * 80)
+    
 
     chat_template = build_chat_prompt_template()
 
@@ -318,7 +318,7 @@ def demo_message_objects_vs_tuples(chat: ChatTongyi) -> None:
     print("\n💡 两种格式都可以使用，功能等价：")
     print("   • 元组格式：更简洁，适合快速开发")
     print("   • 消息对象格式：类型安全，支持更多高级功能")
-    print("-" * 80)
+    
     print()
 
 
@@ -326,9 +326,9 @@ def main() -> None:
     """
     主函数：综合演示 ChatPromptTemplate 和 MessagesPlaceholder 的使用。
     """
-    print("=" * 80)
+    
     print("LangChain 聊天提示词模板（ChatPromptTemplate）示例")
-    print("=" * 80)
+    
     print()
 
     chat = init_chat_model()
@@ -348,16 +348,16 @@ def main() -> None:
     # 示例5：历史会话数据格式对比
     demo_message_objects_vs_tuples(chat)
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
     print()
     print("📌 核心要点总结：")
     print("   1. 历史会话信息是动态的，需要动态注入")
     print("   2. MessagesPlaceholder 作为占位符，提供 history 作为占位的 key")
     print("   3. 基于 invoke 动态注入历史会话记录")
     print("   4. 必须是 invoke，format 无法注入 MessagesPlaceholder")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

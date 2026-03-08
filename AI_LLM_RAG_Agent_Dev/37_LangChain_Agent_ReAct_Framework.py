@@ -1,5 +1,5 @@
 """
-LangChain Agent ReAct 行动框架示例（基于通义 ChatTongyi）
+LangChain Agent ReAct 行动框架示例（基于 ChatOllama）
 
 本示例对应课件中关于「ReAct 思考-行动-观察」框架的图片代码，重点演示：
 
@@ -19,14 +19,14 @@ from typing import Any, Iterable, List
 
 from dotenv import load_dotenv
 from langchain.agents import create_agent
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.messages import BaseMessage
 from langchain_core.tools import tool
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     说明：
     - 与项目中其他 Tongyi 示例保持一致，优先从以下环境变量中读取密钥：
@@ -42,11 +42,11 @@ def init_chat_model() -> ChatTongyi:
             "未找到 DASHSCOPE_API_KEY 或 API_KEY 环境变量，请先在 .env 或系统环境中配置后再运行。"
         )
 
-    # LangChain 的 ChatTongyi 封装会自动从环境变量中读取 key，
+    # LangChain 的 ChatOllama 封装会自动从环境变量中读取 key，
     # 这里设置一份到 DASHSCOPE_API_KEY，确保兼容性。
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -78,7 +78,7 @@ def create_react_agent() -> Any:
     创建一个遵循 ReAct 思考-行动-观察流程的 Agent 智能体。
 
     该 Agent：
-    - 底层模型：ChatTongyi（qwen3-max）
+    - 底层模型：ChatOllama
     - 工具列表：[get_weight, get_height]
     - system_prompt：明确要求模型：
       - 必须按「思考 → 行动 → 观察 → 再思考」的结构解决问题
@@ -154,11 +154,11 @@ def stream_react_process(agent: Any, user_question: str) -> None:
     - chunk["messages"][-1]：为最新追加的那条消息，通常是本轮 Thought / Action / Observation / Answer
     - 通过 `pretty_print_latest_message` 我们可以直观看到 ReAct 的执行轨迹
     """
-    print("=" * 80)
+    
     print("【示例】LangChain Agent ReAct 行动框架（计算 BMI）")
-    print("=" * 80)
+    
     print(f"用户问题：{user_question}")
-    print("-" * 80)
+    
 
     start_time = time.time()
 
@@ -189,9 +189,9 @@ def stream_react_process(agent: Any, user_question: str) -> None:
             pretty_print_latest_message(msg, chunk_index=chunk_count)
 
     elapsed_time = time.time() - start_time
-    print("-" * 80)
+    
     print(f"共接收到 {chunk_count} 个 chunk，耗时 {elapsed_time:.2f} 秒")
-    print("=" * 80)
+    
     print()
 
 
@@ -199,9 +199,9 @@ def main() -> None:
     """
     入口函数：演示 LangChain Agent 在 ReAct 框架下计算 BMI 的完整过程。
     """
-    print("=" * 80)
-    print("LangChain Agent ReAct 行动框架示例（基于通义 ChatTongyi）")
-    print("=" * 80)
+    
+    print("LangChain Agent ReAct 行动框架示例（基于 ChatOllama）")
+    
     print()
 
     agent = create_react_agent()
@@ -211,9 +211,9 @@ def main() -> None:
 
     stream_react_process(agent, user_question)
 
-    print("=" * 80)
+    
     print("示例执行完毕，你可以修改工具实现或 system_prompt，进一步体验 ReAct。")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

@@ -1,14 +1,14 @@
 """
-使用 LangChain 调用通义聊天模型（ChatTongyi）示例
+使用 LangChain 调用通义聊天模型（ChatOllama）示例
 
-本示例演示如何使用 LangChain 的 ChatTongyi 进行多轮对话，包括：
+本示例演示如何使用 LangChain 的 ChatOllama 进行多轮对话，包括：
 - SystemMessage：设置系统角色
 - HumanMessage：用户消息
 - AIMessage：AI 回复消息
 - 流式输出：实时显示模型生成的内容
 
 核心概念：
-- ChatTongyi：聊天模型，与 Tongyi LLM 不同，专门用于对话场景
+- ChatOllama：聊天模型，与 Tongyi LLM 不同，专门用于对话场景
 - SystemMessage：设置 AI 的角色和行为
 - HumanMessage：用户输入的消息
 - AIMessage：AI 的回复消息
@@ -23,13 +23,14 @@
 import os
 
 from dotenv import load_dotenv
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
+
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -46,16 +47,16 @@ def init_chat_model() -> ChatTongyi:
             "未找到 DASHSCOPE_API_KEY 或 API_KEY 环境变量，请先在 .env 或系统环境中配置后再运行。"
         )
 
-    # LangChain 的 ChatTongyi 封装会自动从环境变量中读取 key，
+    # LangChain 的 ChatOllama 封装会自动从环境变量中读取 key，
     # 这里设置一份到 DASHSCOPE_API_KEY，确保兼容性。
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
     # 使用 qwen3-max 聊天模型
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
-def chat_with_system_message_demo(chat: ChatTongyi) -> None:
+def chat_with_system_message_demo(chat: ChatOllama) -> None:
     """
     演示使用 SystemMessage + HumanMessage + AIMessage 进行多轮对话。
 
@@ -66,9 +67,9 @@ def chat_with_system_message_demo(chat: ChatTongyi) -> None:
     4. 用户要求按照上一首的格式再写一首
     5. 使用流式输出显示 AI 的回复
     """
-    print("=" * 80)
+    
     print("【示例1】演示 SystemMessage + HumanMessage + AIMessage 多轮对话")
-    print("-" * 80)
+    
 
     # 准备消息列表
     messages = [
@@ -88,56 +89,50 @@ def chat_with_system_message_demo(chat: ChatTongyi) -> None:
             print(f"  {i}. [AI] {msg.content}")
 
     print("\n模型回复（流式输出）：")
-    print("-" * 80)
+    
 
     # 流式输出
     for chunk in chat.stream(input=messages):
         print(chunk.content, end="", flush=True)
 
     print("\n")
-    print("-" * 80)
+    
     print()
 
 
-def simple_chat_demo(chat: ChatTongyi) -> None:
+def simple_chat_demo(chat: ChatOllama) -> None:
     """
     演示简单的对话场景：只有 SystemMessage 和 HumanMessage。
     """
-    print("=" * 80)
+    
     print("【示例2】简单对话：SystemMessage + HumanMessage")
-    print("-" * 80)
+    
 
     messages = [
         SystemMessage(content="你是一名专业的 Python 编程助手，擅长编写清晰、高效的代码。"),
         HumanMessage(content="请用 Python 写一个简单函数。"),
     ]
 
-    print("消息列表：")
-    for i, msg in enumerate(messages, 1):
-        if isinstance(msg, SystemMessage):
-            print(f"  {i}. [系统] {msg.content}")
-        elif isinstance(msg, HumanMessage):
-            print(f"  {i}. [用户] {msg.content}")
 
     print("\n模型回复（流式输出）：")
-    print("-" * 80)
+    
 
     # 流式输出
     for chunk in chat.stream(input=messages):
         print(chunk.content, end="", flush=True)
 
     print("\n")
-    print("-" * 80)
+    
     print()
 
 
-def multi_turn_conversation_demo(chat: ChatTongyi) -> None:
+def multi_turn_conversation_demo(chat: ChatOllama) -> None:
     """
     演示多轮对话：展示如何维护对话历史。
     """
-    print("=" * 80)
+    
     print("【示例3】多轮对话：维护对话历史")
-    print("-" * 80)
+    
 
     # 初始化对话历史
     messages = [
@@ -169,7 +164,7 @@ def multi_turn_conversation_demo(chat: ChatTongyi) -> None:
         print(chunk.content, end="", flush=True)
     print("\n")
 
-    print("-" * 80)
+    
     print()
 
 
@@ -177,9 +172,9 @@ def main() -> None:
     """
     主函数：演示如何使用 LangChain 调用通义聊天模型。
     """
-    print("=" * 80)
-    print("LangChain 通义聊天模型（ChatTongyi）示例")
-    print("=" * 80)
+    
+    print("LangChain 通义聊天模型（ChatOllama）示例")
+    
     print()
 
     chat = init_chat_model()
@@ -193,9 +188,9 @@ def main() -> None:
     # 示例3：多轮对话维护历史
     multi_turn_conversation_demo(chat)
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

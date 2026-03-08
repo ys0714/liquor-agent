@@ -55,9 +55,9 @@ def pypdfloader_basic_demo() -> None:
     
     展示如何使用 PyPDFLoader 加载 PDF 文件。
     """
-    print("=" * 80)
+    
     print("【示例1】PyPDFLoader 基本用法")
-    print("-" * 80)
+    
     
     # 创建数据目录
     pdf_dir = create_sample_pdf()
@@ -72,7 +72,7 @@ def pypdfloader_basic_demo() -> None:
         print(f"提示：找不到文件 {pdf_file}")
         print("请将您的 PDF 文件放置在该路径，或修改 pdf_file 变量指向您的 PDF 文件")
         print("\n示例代码：")
-        print("-" * 80)
+        
         print("""
 from langchain_community.document_loaders import PyPDFLoader
 
@@ -89,7 +89,7 @@ print(f"成功加载 {len(docs)} 个文档")
     
     # 使用 PyPDFLoader 加载 PDF 文件
     print(f"使用 PyPDFLoader 加载 PDF 文件：{pdf_file}")
-    print("-" * 80)
+    
     try:
         loader = PyPDFLoader(
             file_path=pdf_file,
@@ -99,7 +99,7 @@ print(f"成功加载 {len(docs)} 个文档")
         
         print(f"成功加载 {len(docs)} 个文档（页面）")
         print(f"\n文档内容预览（前 3 个页面）：")
-        print("-" * 80)
+        
         for i, doc in enumerate(docs[:3], start=1):
             print(f"\n【页面 {i}】")
             print(f"内容长度：{len(doc.page_content)} 个字符")
@@ -125,9 +125,9 @@ def pypdfloader_mode_demo() -> None:
     
     展示 'page' 模式和 'single' 模式的不同效果。
     """
-    print("=" * 80)
+    
     print("【示例2】PyPDFLoader - mode 参数对比")
-    print("-" * 80)
+    
     
     pdf_file = "./data/sample.pdf"
     
@@ -137,7 +137,7 @@ def pypdfloader_mode_demo() -> None:
     
     # mode='page'：按页面划分
     print("\n1. mode='page' - 按页面划分不同 Document")
-    print("-" * 80)
+    
     try:
         loader_page = PyPDFLoader(
             file_path=pdf_file,
@@ -155,7 +155,7 @@ def pypdfloader_mode_demo() -> None:
     
     # mode='single'：单个 Document
     print("\n2. mode='single' - 单个 Document")
-    print("-" * 80)
+    
     try:
         loader_single = PyPDFLoader(
             file_path=pdf_file,
@@ -179,9 +179,9 @@ def pypdfloader_password_demo() -> None:
     
     展示如何加载加密的 PDF 文件。
     """
-    print("=" * 80)
+    
     print("【示例3】PyPDFLoader - password 参数（加密 PDF）")
-    print("-" * 80)
+    
     
     # 示例：加载加密的 PDF 文件
     encrypted_pdf_file = "./data/encrypted_sample.pdf"
@@ -189,7 +189,7 @@ def pypdfloader_password_demo() -> None:
     if not os.path.exists(encrypted_pdf_file):
         print(f"提示：找不到加密的 PDF 文件 {encrypted_pdf_file}")
         print("如果您有加密的 PDF 文件，可以使用以下代码加载：")
-        print("-" * 80)
+        
         print("""
 from langchain_community.document_loaders import PyPDFLoader
 
@@ -204,7 +204,7 @@ docs = loader.load()
         return
     
     print(f"尝试加载加密的 PDF 文件：{encrypted_pdf_file}")
-    print("-" * 80)
+    
     
     # 尝试不使用密码加载（应该会失败）
     print("\n1. 不使用密码加载（应该失败）")
@@ -241,9 +241,9 @@ def pypdfloader_metadata_demo() -> None:
     
     展示 PDF 文档的元数据信息。
     """
-    print("=" * 80)
+    
     print("【示例4】PyPDFLoader - 文档元数据")
-    print("-" * 80)
+    
     
     pdf_file = "./data/sample.pdf"
     
@@ -260,7 +260,7 @@ def pypdfloader_metadata_demo() -> None:
         
         print(f"成功加载 {len(docs)} 个文档\n")
         print("文档元数据示例：")
-        print("-" * 80)
+        
         
         # 显示前几个文档的元数据
         for i, doc in enumerate(docs[:3], start=1):
@@ -285,9 +285,9 @@ def pypdfloader_lazy_load_demo() -> None:
     
     lazy_load() 方法用于延迟流式传输文档，对大型 PDF 文件很有用。
     """
-    print("=" * 80)
+    
     print("【示例5】PyPDFLoader lazy_load() 方法 - 延迟流式加载")
-    print("-" * 80)
+    
     
     pdf_file = "./data/sample.pdf"
     
@@ -302,7 +302,7 @@ def pypdfloader_lazy_load_demo() -> None:
         )
         
         print("使用 lazy_load() 方法逐个加载文档：")
-        print("-" * 80)
+        
         for i, document in enumerate(loader.lazy_load(), start=1):
             print(f"\n文档 {i}（页面 {i}）:")
             print(f"  内容长度：{len(document.page_content)} 个字符")
@@ -322,18 +322,18 @@ def pypdfloader_installation_demo() -> None:
     
     展示如何安装所需的依赖库。
     """
-    print("=" * 80)
+    
     print("【示例6】PyPDFLoader 安装要求")
-    print("-" * 80)
+    
     
     print("PyPDFLoader 依赖 PyPDF 库，需要先安装：")
-    print("-" * 80)
+    
     print("\n安装命令：")
     print("  pip install pypdf")
     print("\n或者使用 conda：")
     print("  conda install -c conda-forge pypdf")
     print("\n验证安装：")
-    print("-" * 80)
+    
     
     try:
         import pypdf
@@ -355,9 +355,9 @@ def main() -> None:
     """
     主函数：演示 PyPDFLoader 的各种使用方法。
     """
-    print("=" * 80)
+    
     print("LangChain PyPDFLoader 文档加载器示例")
-    print("=" * 80)
+    
     print()
 
     # 加载环境变量（虽然 PyPDFLoader 不需要 API Key，但保持一致性）
@@ -381,9 +381,9 @@ def main() -> None:
     # 示例5：lazy_load() 方法
     pypdfloader_lazy_load_demo()
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
     print("\n提示：")
     print("- PyPDFLoader 需要先安装 pypdf 库：pip install pypdf")
     print("- 请将您的 PDF 文件放置在 ./data/ 目录下，或修改代码中的 file_path 参数")

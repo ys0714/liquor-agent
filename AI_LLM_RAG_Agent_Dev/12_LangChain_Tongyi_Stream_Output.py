@@ -1,10 +1,10 @@
 """
-使用 LangChain 实现通义大模型（Tongyi）的流式输出示例
+使用 LangChain 实现通义大模型（OllamaLLM）的流式输出示例
 
 本示例对应课件中的代码片段：
 
-from langchain_community.llms.tongyi import Tongyi
-model = Tongyi(model="qwen-max")
+from langchain_community.llms.OllamaLLM import OllamaLLM
+model = OllamaLLM(model= os.getenv("MODEL"))
 res = model.stream(input="你是谁呀能做什么?")
 for chunk in res:
     print(chunk, end="", flush=True)
@@ -24,11 +24,12 @@ import time
 
 from dotenv import load_dotenv
 from langchain_community.llms.tongyi import Tongyi
+from langchain_ollama import OllamaLLM
 
 
-def init_llm() -> Tongyi:
+def init_llm() -> OllamaLLM:
     """
-    初始化 Tongyi LLM 模型实例。
+    初始化 OllamaLLM LLM 模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -49,22 +50,22 @@ def init_llm() -> Tongyi:
             "未找到 DASHSCOPE_API_KEY 或 API_KEY 环境变量，请先在 .env 或系统环境中配置后再运行。"
         )
 
-    # LangChain 的 Tongyi 封装会自动从环境变量中读取 key，
+    # LangChain 的 OllamaLLM 封装会自动从环境变量中读取 key，
     # 这里设置一份到 DASHSCOPE_API_KEY，确保兼容性。
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
     # 课件中的示例使用 qwen-max，这里保持一致
-    llm = Tongyi(model="qwen-max")
+    llm = OllamaLLM(model= os.getenv("MODEL"))
     return llm
 
 
-def invoke_demo(llm: Tongyi) -> None:
+def invoke_demo(llm: OllamaLLM) -> None:
     """
     演示使用 invoke 方法：一次性返回完整结果。
     """
-    print("=" * 80)
+    
     print("【示例1】使用 invoke 方法：一次性返回完整结果")
-    print("-" * 80)
+    
 
     prompt = "你是谁呀能做什么?"
     print(f"提示词：{prompt}")
@@ -79,13 +80,13 @@ def invoke_demo(llm: Tongyi) -> None:
     print()
 
 
-def stream_demo(llm: Tongyi) -> None:
+def stream_demo(llm: OllamaLLM) -> None:
     """
     演示使用 stream 方法：逐段返回结果，实现流式输出。
     """
-    print("=" * 80)
+    
     print("【示例2】使用 stream 方法：逐段返回结果，流式输出")
-    print("-" * 80)
+    
 
     prompt = "你是谁呀能做什么?"
     print(f"提示词：{prompt}")
@@ -111,13 +112,13 @@ def stream_demo(llm: Tongyi) -> None:
     print()
 
 
-def stream_comparison_demo(llm: Tongyi) -> None:
+def stream_comparison_demo(llm: OllamaLLM) -> None:
     """
     对比演示：展示流式输出和一次性输出的区别。
     """
-    print("=" * 80)
+    
     print("【示例3】对比演示：流式输出 vs 一次性输出")
-    print("-" * 80)
+    
 
     prompt = "请用中文详细介绍一下人工智能的发展历史，大约200字。"
     print(f"提示词：{prompt}\n")
@@ -153,9 +154,9 @@ def main() -> None:
     """
     主函数：演示如何使用 LangChain 实现通义大模型的流式输出。
     """
-    print("=" * 80)
+    
     print("LangChain 通义大模型流式输出示例")
-    print("=" * 80)
+    
     print()
 
     llm = init_llm()
@@ -169,9 +170,9 @@ def main() -> None:
     # 示例3：对比演示
     stream_comparison_demo(llm)
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

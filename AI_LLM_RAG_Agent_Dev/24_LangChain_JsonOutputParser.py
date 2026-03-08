@@ -30,15 +30,15 @@ import os
 from typing import Any, Dict
 
 from dotenv import load_dotenv
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.messages import AIMessage
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.prompts import PromptTemplate
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -55,7 +55,7 @@ def init_chat_model() -> ChatTongyi:
         )
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -65,9 +65,9 @@ def demo_non_standard_chaining() -> None:
 
     展示为什么直接连接模型和解析器不是标准做法。
     """
-    print("=" * 80)
+    
     print("【示例一】非标准的链式构建方式")
-    print("=" * 80)
+    
 
     print("\n非标准做法：chain = prompt | model | parser | model | parser")
     print("问题：上一个模型的输出，没有被处理就输入下一个模型。")
@@ -89,9 +89,9 @@ def demo_type_requirements() -> None:
     2. 提示词模板要求输入为 dict 类型
     3. 需要将 AIMessage 转换为字典
     """
-    print("=" * 80)
+    
     print("【示例二】类型转换需求分析")
-    print("=" * 80)
+    
 
     # 创建提示词模板
     prompt = PromptTemplate.from_template("测试：{name}")
@@ -130,9 +130,9 @@ def demo_json_output_parser_basic() -> None:
     2. JsonOutputParser 如何将 AIMessage 转换为字典
     3. JsonOutputParser 与 StrOutputParser 的区别
     """
-    print("=" * 80)
+    
     print("【示例三】JsonOutputParser 基本用法")
-    print("=" * 80)
+    
 
     # 创建解析器实例
     str_parser = StrOutputParser()
@@ -192,9 +192,9 @@ def demo_multi_model_chain_with_json_parser() -> None:
     5. 第二个模型：解析名字的含义
     6. StrOutputParser：将最终结果解析为字符串
     """
-    print("=" * 80)
+    
     print("【示例四】使用 JsonOutputParser 构建多模型链（完整示例）")
-    print("=" * 80)
+    
 
     # 创建解析器实例
     str_parser = StrOutputParser()
@@ -207,7 +207,7 @@ def demo_multi_model_chain_with_json_parser() -> None:
     # 创建模型实例
     model = init_chat_model()
     print(f"\n2. 创建模型实例：")
-    print(f"   model = ChatTongyi(model='qwen3-max')")
+    print(f"   model = ChatOllama(model=os.getenv('MODEL'))")
 
     # 创建第一个提示词模板
     # 要求模型返回JSON格式，key是name，value是起的名字
@@ -244,12 +244,12 @@ def demo_multi_model_chain_with_json_parser() -> None:
     # 调用链
     print("\n6. 调用链：")
     print("   res = chain.invoke({'lastname': '张', 'gender': '女儿'})")
-    print("=" * 80)
+    
     res: str = chain.invoke({"lastname": "张", "gender": "女儿"})
     print(f"\n✅ 成功！最终结果：")
     print(res)
     print(f"\n结果类型：{type(res)}")
-    print("=" * 80)
+    
     print()
 
 
@@ -259,9 +259,9 @@ def demo_chain_step_by_step() -> None:
 
     帮助理解每个步骤的输入输出类型。
     """
-    print("=" * 80)
+    
     print("【示例五】链式调用的逐步执行过程")
-    print("=" * 80)
+    
 
     # 创建组件
     first_prompt = PromptTemplate.from_template(
@@ -333,9 +333,9 @@ def demo_str_vs_json_parser() -> None:
 
     展示为什么在多模型链中需要使用 JsonOutputParser。
     """
-    print("=" * 80)
+    
     print("【示例六】StrOutputParser vs JsonOutputParser")
-    print("=" * 80)
+    
 
     model = init_chat_model()
     str_parser = StrOutputParser()
@@ -392,9 +392,9 @@ def main() -> None:
     5. 展示链式调用的逐步执行过程
     6. 对比 StrOutputParser 和 JsonOutputParser 的区别
     """
-    print("=" * 80)
+    
     print("LangChain JsonOutputParser JSON输出解析器示例")
-    print("=" * 80)
+    
     print()
 
     # 示例一：非标准的链式构建方式
@@ -415,9 +415,9 @@ def main() -> None:
     # 示例六：StrOutputParser vs JsonOutputParser
     demo_str_vs_json_parser()
 
-    print("=" * 80)
+    
     print("全部示例执行完毕。")
-    print("=" * 80)
+    
     print("\n总结：")
     print("1. 构建多模型链时，应该遵循标准处理逻辑：")
     print("   初始输入 → 提示词模板 → 模型 → 数据处理 → 提示词模板 → 模型 → 解析器 → 结果")
@@ -427,7 +427,7 @@ def main() -> None:
     print("   应使用 JsonOutputParser 而不是 StrOutputParser")
     print("5. 正确的链式写法：")
     print("   chain = first_prompt | model | json_parser | second_prompt | model | str_parser")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

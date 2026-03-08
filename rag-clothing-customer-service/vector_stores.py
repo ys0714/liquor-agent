@@ -27,7 +27,7 @@ if __name__ == "__main__":
     """
     import os
     from dotenv import load_dotenv
-    from langchain_community.embeddings import DashScopeEmbeddings
+    from langchain_ollama import OllamaEmbeddings
 
     # 将当前工作目录切换为脚本所在目录，保证相对路径（如 ./chroma_db、./md5.text）始终指向项目目录
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -52,7 +52,10 @@ if __name__ == "__main__":
         
         # 1. 创建 embedding 模型
         print("\n[1] 创建 embedding 模型...")
-        embedding = DashScopeEmbeddings(model="text-embedding-v4")
+        embedding = OllamaEmbeddings(
+            model=os.getenv("EMBEDDING_MODEL", "embeddinggemma:latest"),
+            base_url=os.getenv("EMBEDDING_BASE_URL"),
+        )
         print("✓ Embedding 模型创建成功")
         
         # 2. 初始化 VectorStoreService

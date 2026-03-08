@@ -30,7 +30,7 @@ import os
 from typing import Any, Dict, Sequence
 
 from dotenv import load_dotenv
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import BaseMessage, message_to_dict, messages_from_dict
 from langchain_core.output_parsers import StrOutputParser
@@ -116,9 +116,9 @@ class FileChatMessageHistory(BaseChatMessageHistory):
             json.dump([], f, ensure_ascii=False, indent=2)
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -135,7 +135,7 @@ def init_chat_model() -> ChatTongyi:
         )
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -164,9 +164,9 @@ def demo_permanent_session_memory_introduction() -> None:
     2. 为什么需要长期会话记忆
     3. 如何实现长期会话记忆
     """
-    print("=" * 80)
+    
     print("【示例一】长期会话记忆基本介绍")
-    print("=" * 80)
+    
 
     print("\n1. 什么是长期会话记忆：")
     print("   - 临时会话记忆（InMemoryChatMessageHistory）存储在内存中，")
@@ -203,9 +203,9 @@ def demo_file_chat_message_history_class() -> None:
     2. 三个核心方法的实现
     3. 文件存储机制
     """
-    print("=" * 80)
+    
     print("【示例二】FileChatMessageHistory 类实现")
-    print("=" * 80)
+    
 
     print("\n1. 类的继承关系：")
     print("   class FileChatMessageHistory(BaseChatMessageHistory):")
@@ -252,9 +252,9 @@ def demo_file_storage_mechanism() -> None:
     2. 不同 session_id 对应不同文件
     3. 文件内容的 JSON 格式
     """
-    print("=" * 80)
+    
     print("【示例三】文件存储机制")
-    print("=" * 80)
+    
 
     # 创建存储目录
     storage_path = "./chat_history"
@@ -308,9 +308,9 @@ def demo_create_get_history_with_file_storage() -> None:
     2. get_history 函数的实现
     3. FileChatMessageHistory 的使用
     """
-    print("=" * 80)
+    
     print("【示例四】创建使用文件存储的 get_history 函数")
-    print("=" * 80)
+    
 
     storage_path = "./chat_history"
     os.makedirs(storage_path, exist_ok=True)
@@ -375,9 +375,9 @@ def demo_conversation_chain_with_file_history() -> None:
     4. 演示多轮对话
     5. 演示程序重启后历史记录仍然保留
     """
-    print("=" * 80)
+    
     print("【示例五】使用 FileChatMessageHistory 创建带历史记录的对话链（完整示例）")
-    print("=" * 80)
+    
 
     # 创建存储目录
     storage_path = "./chat_history"
@@ -386,7 +386,7 @@ def demo_conversation_chain_with_file_history() -> None:
     # 创建模型实例
     model = init_chat_model()
     print("\n1. 创建模型实例：")
-    print("   model = ChatTongyi(model='qwen3-max')")
+    print("   model = ChatOllama(model=os.getenv('MODEL'))")
 
     # 创建提示词模板
     prompt = PromptTemplate.from_template(
@@ -446,31 +446,31 @@ def demo_conversation_chain_with_file_history() -> None:
 
     # 演示多轮对话
     print("\n7. 演示多轮对话：")
-    print("=" * 80)
+    
 
     print("\n【第一轮对话】")
     print("输入：'小明有一只猫'")
-    print("-" * 80)
+    
     res1 = conversation_chain.invoke({"input": "小明有一只猫"}, session_config)
     print(f"\n✅ 第一轮对话结果：")
     print(res1)
-    print("-" * 80)
+    
 
     print("\n【第二轮对话】")
     print("输入：'小刚有两只狗'")
-    print("-" * 80)
+    
     res2 = conversation_chain.invoke({"input": "小刚有两只狗"}, session_config)
     print(f"\n✅ 第二轮对话结果：")
     print(res2)
-    print("-" * 80)
+    
 
     print("\n【第三轮对话】")
     print("输入：'共有几只宠物？'")
-    print("-" * 80)
+    
     res3 = conversation_chain.invoke({"input": "共有几只宠物？"}, session_config)
     print(f"\n✅ 第三轮对话结果：")
     print(res3)
-    print("=" * 80)
+    
 
     print("\n结论：")
     print("- 模型能够记住之前的对话内容")
@@ -490,16 +490,16 @@ def demo_persistence_after_restart() -> None:
     2. 模拟程序重启：重新创建 FileChatMessageHistory 实例
     3. 验证历史记录仍然存在
     """
-    print("=" * 80)
+    
     print("【示例六】程序重启后历史记录仍然保留")
-    print("=" * 80)
+    
 
     storage_path = "./chat_history"
     os.makedirs(storage_path, exist_ok=True)
     session_id = "user_persistence_test"
 
     print("\n1. 第一次运行：创建会话并添加消息")
-    print("=" * 80)
+    
 
     # 第一次运行：创建历史记录并添加消息
     history1 = FileChatMessageHistory(storage_path, session_id)
@@ -519,7 +519,7 @@ def demo_persistence_after_restart() -> None:
     print(f"   当前消息数量：{len(history1.messages)}")
 
     print("\n2. 模拟程序重启：重新创建 FileChatMessageHistory 实例")
-    print("=" * 80)
+    
 
     # 模拟程序重启：重新创建实例（不保留内存中的引用）
     history2 = FileChatMessageHistory(storage_path, session_id)
@@ -528,7 +528,7 @@ def demo_persistence_after_restart() -> None:
     print("   这是新的实例，内存中没有任何消息")
 
     print("\n3. 验证历史记录仍然存在")
-    print("=" * 80)
+    
 
     messages = history2.messages
     print(f"   从文件读取消息数量：{len(messages)}")
@@ -553,9 +553,9 @@ def demo_clear_history() -> None:
     2. 清除消息
     3. 验证消息已被清除
     """
-    print("=" * 80)
+    
     print("【示例七】清除历史记录功能")
-    print("=" * 80)
+    
 
     storage_path = "./chat_history"
     os.makedirs(storage_path, exist_ok=True)
@@ -592,9 +592,9 @@ def demo_temporary_vs_permanent_storage() -> None:
     2. FileChatMessageHistory 的特点
     3. 使用场景建议
     """
-    print("=" * 80)
+    
     print("【示例八】临时存储 vs 长期存储的对比")
-    print("=" * 80)
+    
 
     print("\n1. InMemoryChatMessageHistory（临时存储）：")
     print("   优点：")
@@ -654,9 +654,9 @@ def main() -> None:
     7. 清除历史记录功能
     8. 临时存储 vs 长期存储的对比
     """
-    print("=" * 80)
+    
     print("LangChain 长期会话记忆示例")
-    print("=" * 80)
+    
     print()
 
     # 示例一：长期会话记忆基本介绍
@@ -683,16 +683,16 @@ def main() -> None:
     # 示例八：临时存储 vs 长期存储的对比
     demo_temporary_vs_permanent_storage()
 
-    print("=" * 80)
+    
     print("全部示例执行完毕。")
-    print("=" * 80)
+    
     print("\n总结：")
     print("1. FileChatMessageHistory 继承 BaseChatMessageHistory，实现三个方法")
     print("2. 基于文件存储会话记录，以 session_id 为文件名")
     print("3. 不同 session_id 有不同文件存储消息")
     print("4. 数据持久化，程序重启后历史记录仍然保留")
     print("5. 适合生产环境（单机或小规模），不适合大规模分布式系统")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

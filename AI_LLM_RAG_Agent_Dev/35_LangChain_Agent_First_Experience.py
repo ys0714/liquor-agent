@@ -1,10 +1,10 @@
 """
-LangChain Agent 智能体初体验示例（基于通义 ChatTongyi）
+LangChain Agent 智能体初体验示例（基于 ChatOllama）
 
 本示例对应课件中关于「Agent 智能体」的图片，重点演示：
 
 1. 如何使用 LangChain 定义一个最简单的工具（查询天气）
-2. 如何将聊天模型（ChatTongyi）和工具组合成一个 Agent 智能体
+2. 如何将聊天模型（ChatOllama）和工具组合成一个 Agent 智能体
 3. 如何向 Agent 发送用户消息，并打印出 Agent 返回的消息列表
 4. 如何配合 StrOutputParser，将消息对象统一解析为字符串输出
 
@@ -25,15 +25,15 @@ from typing import List
 
 from dotenv import load_dotenv
 from langchain.agents import create_agent
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.messages import BaseMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.tools import tool
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     说明：
     - 与项目中其他示例保持一致，优先从以下环境变量中读取密钥：
@@ -49,11 +49,11 @@ def init_chat_model() -> ChatTongyi:
             "未找到 DASHSCOPE_API_KEY 或 API_KEY 环境变量，请先在 .env 或系统环境中配置后再运行。"
         )
 
-    # LangChain 的 ChatTongyi 封装会自动从环境变量中读取 key，
+    # LangChain 的 ChatOllama 封装会自动从环境变量中读取 key，
     # 这里设置一份到 DASHSCOPE_API_KEY，确保兼容性。
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -76,7 +76,7 @@ def create_weather_agent() -> any:
     创建一个可以调用 `get_weather` 工具的 Agent 智能体。
 
     使用 LangChain 提供的 `create_agent` 辅助方法，直接将：
-    - 聊天模型（ChatTongyi）
+    - 聊天模型（ChatOllama）
     - 工具列表（[get_weather]）
     - system_prompt（系统角色提示）
     组合成一个可调用的 Agent。
@@ -103,11 +103,11 @@ def invoke_agent_and_print_messages(agent: any, user_question: str) -> None:
     - Agent 的输出同样包含 "messages"，其中记录了整个对话过程：
       例如：系统提示词、用户提问、Agent 思考过程、工具调用、最终回答等
     """
-    print("=" * 80)
+    
     print("【示例】LangChain Agent 智能体初体验：查询天气")
-    print("=" * 80)
+    
     print(f"用户问题：{user_question}")
-    print("-" * 80)
+    
 
     # 调用 Agent
     res = agent.invoke(
@@ -125,17 +125,17 @@ def invoke_agent_and_print_messages(agent: any, user_question: str) -> None:
     parser = StrOutputParser()
 
     print("Agent 返回的消息列表：")
-    print("-" * 80)
+    
     for i, msg in enumerate(messages, 1):
         msg_type = type(msg).__name__
         text = parser.invoke(msg)
         print(f"{i:02d}. {msg_type}: {text}")
 
-    print("-" * 80)
+    
     print("提示：")
     print("1. 上面的每一条消息都可能来自：系统提示词、用户输入、Agent 思考过程、工具调用或最终回答；")
     print("2. 通过查看消息列表，你可以清楚地看到 Agent 是如何一步步完成任务的。")
-    print("=" * 80)
+    
     print()
 
 
@@ -143,9 +143,9 @@ def main() -> None:
     """
     入口函数：演示 LangChain Agent 智能体的最小可用示例。
     """
-    print("=" * 80)
-    print("LangChain Agent 智能体初体验（基于通义 ChatTongyi）")
-    print("=" * 80)
+    
+    print("LangChain Agent 智能体初体验（基于 ChatOllama）")
+    
     print()
 
     # 1. 创建可以调用天气工具的 Agent
@@ -157,9 +157,9 @@ def main() -> None:
     # 3. 调用 Agent 并打印消息列表
     invoke_agent_and_print_messages(agent, user_question)
 
-    print("=" * 80)
+    
     print("示例执行完毕，可以根据需要修改工具逻辑，扩展更多能力。")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

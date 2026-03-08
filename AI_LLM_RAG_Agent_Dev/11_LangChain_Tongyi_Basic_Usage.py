@@ -4,7 +4,7 @@
 本示例对应课件中的代码片段：
 
 from langchain_community.llms.tongyi import Tongyi
-llm = Tongyi(model="qwen-max")
+llm = Tongyi(model= os.getenv("MODEL"))
 res = llm.invoke("帮我讲个笑话吧")
 print(res)
 
@@ -19,6 +19,9 @@ from typing import List
 
 from dotenv import load_dotenv
 from langchain_community.llms.tongyi import Tongyi
+from langchain_community.llms.ollama import Ollama
+from langchain_ollama import OllamaLLM
+from langchain_ollama import ChatOllama
 
 
 def init_llm() -> Tongyi:
@@ -43,7 +46,7 @@ def init_llm() -> Tongyi:
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
     # 课件中的示例使用 qwen-max，这里保持一致
-    llm = Tongyi(model="qwen-max")
+    llm = OllamaLLM(model=os.getenv("MODEL"))
     return llm
 
 
@@ -51,9 +54,9 @@ def single_call_demo(llm: Tongyi) -> None:
     """
     对应课件中的最小示例：调用一次模型，生成一个笑话。
     """
-    print("=" * 80)
+    
     print("【示例1】最小调用示例：让模型讲一个笑话")
-    print("-" * 80)
+    
 
     prompt = "帮我讲个轻松幽默、适合职场分享的中文笑话。"
     res = llm.invoke(prompt)
@@ -68,9 +71,9 @@ def multi_call_demo(llm: Tongyi) -> None:
     """
     展示使用同一个 LLM 实例进行多次调用。
     """
-    print("=" * 80)
+    
     print("【示例2】多次调用同一模型，完成不同任务")
-    print("-" * 80)
+    
 
     prompts: List[str] = [
         "用 2 句话解释一下什么是大语言模型（LLM），面向零基础读者。",
@@ -92,9 +95,9 @@ def main() -> None:
     """
     主函数：演示如何使用 LangChain 调用阿里云通义大模型 Tongyi。
     """
-    print("=" * 80)
+    
     print("使用 LangChain 访问阿里云通义大模型（Tongyi）示例")
-    print("=" * 80)
+    
 
     llm = init_llm()
 
@@ -104,9 +107,9 @@ def main() -> None:
     # 扩展示例：多次调用
     multi_call_demo(llm)
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

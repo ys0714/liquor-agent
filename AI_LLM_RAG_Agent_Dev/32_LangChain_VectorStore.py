@@ -30,14 +30,15 @@ import os
 from typing import List
 
 from dotenv import load_dotenv
-from langchain_community.embeddings import DashScopeEmbeddings
+from langchain_ollama import OllamaEmbeddings
 from langchain_core.documents import Document
 from langchain_core.vectorstores import InMemoryVectorStore
+from openai import base_url
 
 
-def init_embedding_model() -> DashScopeEmbeddings:
+def init_embedding_model() -> OllamaEmbeddings:
     """
-    初始化 DashScopeEmbeddings 嵌入模型实例。
+    初始化 OllamaEmbeddings 嵌入模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -52,10 +53,10 @@ def init_embedding_model() -> DashScopeEmbeddings:
             "未找到 DASHSCOPE_API_KEY 或 API_KEY 环境变量，请先在 .env 或系统环境中配置后再运行。"
         )
 
-    # LangChain 的 DashScopeEmbeddings 会自动从环境变量中读取 key
-    os.environ["DASHSCOPE_API_KEY"] = api_key
-
-    embed = DashScopeEmbeddings()
+    embed = OllamaEmbeddings(
+        model=os.getenv("EMBEDDING_MODEL", "embeddinggemma:latest"),
+        base_url=os.getenv("EMBEDDING_BASE_URL"),
+    )
     return embed
 
 
@@ -97,9 +98,9 @@ def inmemory_vectorstore_basic_demo() -> None:
 
     展示如何使用内存向量存储进行文档的存储、删除和检索。
     """
-    print("=" * 80)
+    
     print("【示例1】InMemoryVectorStore 基本用法")
-    print("-" * 80)
+    
 
     # 初始化嵌入模型
     embedding = init_embedding_model()
@@ -114,7 +115,7 @@ def inmemory_vectorstore_basic_demo() -> None:
 
     # 1. 添加文档到向量存储，并指定 id
     print("1. 添加文档到向量存储（add_documents）")
-    print("-" * 80)
+    
     doc_ids = [f"doc_{i+1}" for i in range(len(documents))]
     vector_store.add_documents(documents=documents, ids=doc_ids)
     print(f"✓ 成功添加 {len(documents)} 个文档到向量存储")
@@ -122,7 +123,7 @@ def inmemory_vectorstore_basic_demo() -> None:
 
     # 2. 相似性搜索
     print("2. 相似性搜索（similarity_search）")
-    print("-" * 80)
+    
     query = "什么是机器学习？"
     print(f"查询文本：{query}")
     print(f"搜索前 {3} 个最相似的文档：\n")
@@ -136,7 +137,7 @@ def inmemory_vectorstore_basic_demo() -> None:
 
     # 3. 删除文档
     print("3. 删除文档（delete）")
-    print("-" * 80)
+    
     delete_ids = ["doc_1"]
     print(f"删除文档 ID：{delete_ids}")
     vector_store.delete(ids=delete_ids)
@@ -144,7 +145,7 @@ def inmemory_vectorstore_basic_demo() -> None:
 
     # 再次搜索，验证删除效果
     print("4. 验证删除效果（再次搜索）")
-    print("-" * 80)
+    
     similar_docs_after = vector_store.similarity_search(query, k=3)
     print(f"删除后搜索结果数量：{len(similar_docs_after)} 个文档")
     
@@ -172,9 +173,9 @@ def inmemory_vectorstore_with_metadata_demo() -> None:
 
     展示文档的元数据信息。
     """
-    print("=" * 80)
+    
     print("【示例2】InMemoryVectorStore - 文档元数据")
-    print("-" * 80)
+    
 
     # 初始化嵌入模型和向量存储
     embedding = init_embedding_model()
@@ -188,7 +189,7 @@ def inmemory_vectorstore_with_metadata_demo() -> None:
 
     # 搜索并展示元数据
     print("1. 相似性搜索（展示文档元数据）")
-    print("-" * 80)
+    
     query = "人工智能相关的内容"
     print(f"查询文本：{query}\n")
 
@@ -207,9 +208,9 @@ def inmemory_vectorstore_similarity_search_with_score_demo() -> None:
 
     展示如何获取搜索结果的相似度分数。
     """
-    print("=" * 80)
+    
     print("【示例3】InMemoryVectorStore - 相似性搜索（带分数）")
-    print("-" * 80)
+    
 
     # 初始化嵌入模型和向量存储
     embedding = init_embedding_model()
@@ -223,7 +224,7 @@ def inmemory_vectorstore_similarity_search_with_score_demo() -> None:
 
     # 相似性搜索（带分数）
     print("1. 相似性搜索（带分数）")
-    print("-" * 80)
+    
     query = "什么是深度学习？"
     print(f"查询文本：{query}\n")
 
@@ -244,9 +245,9 @@ def chroma_vectorstore_demo() -> None:
 
     Chroma 是一个开源的向量数据库，支持持久化存储。
     """
-    print("=" * 80)
+    
     print("【示例4】Chroma 向量存储的使用")
-    print("-" * 80)
+    
 
     try:
         from langchain_chroma import Chroma
@@ -254,13 +255,16 @@ def chroma_vectorstore_demo() -> None:
         print("✗ 未安装 langchain-chroma 库")
         print("请运行：pip install langchain-chroma")
         print("\n示例代码：")
-        print("-" * 80)
+        
         print("""
-from langchain_community.embeddings import DashScopeEmbeddings
+from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 
 # 初始化嵌入模型
-embedding = DashScopeEmbeddings()
+embedding = OllamaEmbeddings(
+    model=os.getenv("EMBEDDING_MODEL", "embeddinggemma:latest"),
+    base_url=os.getenv("EMBEDDING_BASE_URL"),
+)
 
 # 创建 Chroma 向量存储
 vector_store = Chroma(
@@ -287,7 +291,7 @@ vector_store.delete(ids=["doc1"])
     # 创建 Chroma 向量存储
     persist_directory = "./chroma_langchain_db"
     print(f"创建 Chroma 向量存储（持久化目录：{persist_directory}）")
-    print("-" * 80)
+    
 
     vector_store = Chroma(
         collection_name="example_collection",
@@ -305,7 +309,7 @@ vector_store.delete(ids=["doc1"])
 
     # 相似性搜索（不带过滤）
     print("2. 相似性搜索（不带过滤条件）")
-    print("-" * 80)
+    
     query = "人工智能相关的内容"
     print(f"查询文本：{query}")
     print("过滤条件：无\n")
@@ -319,7 +323,7 @@ vector_store.delete(ids=["doc1"])
 
     # 相似性搜索（带 topic 过滤）
     print("3. 相似性搜索（带元数据过滤 - topic）")
-    print("-" * 80)
+    
     print(f"查询文本：{query}")
     print("过滤条件：topic='ai'（只搜索 AI 相关主题的文档）\n")
 
@@ -336,7 +340,7 @@ vector_store.delete(ids=["doc1"])
 
     # 相似性搜索（带 source 过滤）
     print("4. 相似性搜索（带元数据过滤 - source）")
-    print("-" * 80)
+    
     print(f"查询文本：{query}")
     print("过滤条件：source='ml_intro'（只搜索特定来源的文档）\n")
 
@@ -353,7 +357,7 @@ vector_store.delete(ids=["doc1"])
 
     # 删除文档
     print("5. 删除文档")
-    print("-" * 80)
+    
     delete_ids = ["chroma_doc_1"]
     print(f"删除文档 ID：{delete_ids}")
     vector_store.delete(ids=delete_ids)
@@ -371,9 +375,9 @@ def vectorstore_rag_workflow_demo() -> None:
 
     展示从文档加载、向量化、存储到检索的完整流程。
     """
-    print("=" * 80)
+    
     print("【示例5】完整的 RAG 工作流程演示")
-    print("-" * 80)
+    
 
     # 初始化嵌入模型
     embedding = init_embedding_model()
@@ -384,7 +388,7 @@ def vectorstore_rag_workflow_demo() -> None:
 
     # 索引阶段：文档 -> 嵌入模型 -> 嵌入向量 -> 向量存储
     print("【索引阶段】文档存储流程")
-    print("-" * 80)
+    
     documents = create_sample_documents()
     print(f"1. 准备文档：{len(documents)} 个文档")
     print("2. 通过嵌入模型将文档转换为向量")
@@ -396,7 +400,7 @@ def vectorstore_rag_workflow_demo() -> None:
 
     # 查询阶段：查询文本 -> 嵌入模型 -> 查询向量 -> 相似性搜索 -> Top-k 结果
     print("【查询阶段】文档检索流程")
-    print("-" * 80)
+    
     query = "请介绍一下人工智能的相关技术"
     print(f"1. 用户查询：{query}")
     print("2. 通过嵌入模型将查询转换为向量")
@@ -407,7 +411,7 @@ def vectorstore_rag_workflow_demo() -> None:
     print("✓ 查询阶段完成：找到最相似的文档\n")
 
     print("检索结果：")
-    print("-" * 80)
+    
     for i, doc in enumerate(similar_docs, start=1):
         print(f"\n【结果 {i}】")
         print(f"  内容：{doc.page_content}")
@@ -415,7 +419,7 @@ def vectorstore_rag_workflow_demo() -> None:
 
     print("\n" + "=" * 80)
     print("RAG 工作流程说明：")
-    print("=" * 80)
+    
     print("""
 典型的 RAG 流程包括两个阶段：
 
@@ -439,12 +443,12 @@ def vectorstore_installation_demo() -> None:
 
     展示如何安装所需的依赖库。
     """
-    print("=" * 80)
+    
     print("【示例6】向量存储安装要求")
-    print("-" * 80)
+    
 
     print("向量存储相关的库安装：")
-    print("-" * 80)
+    
 
     # 检查 InMemoryVectorStore
     try:
@@ -453,13 +457,13 @@ def vectorstore_installation_demo() -> None:
     except ImportError as e:
         print(f"✗ InMemoryVectorStore 不可用：{e}")
 
-    # 检查 DashScopeEmbeddings
+    # 检查 OllamaEmbeddings
     try:
-        from langchain_community.embeddings import DashScopeEmbeddings
-        print("✓ DashScopeEmbeddings 可用（langchain-community）")
+        from langchain_ollama import OllamaEmbeddings
+        print("✓ OllamaEmbeddings 可用（langchain-ollama）")
     except ImportError as e:
-        print(f"✗ DashScopeEmbeddings 不可用：{e}")
-        print("  请运行：pip install langchain-community")
+        print(f"✗ OllamaEmbeddings 不可用：{e}")
+        print("  请运行：pip install langchain-ollama")
 
     # 检查 Chroma
     try:
@@ -470,9 +474,11 @@ def vectorstore_installation_demo() -> None:
         print("  请运行：pip install langchain-chroma")
 
     print("\n安装命令汇总：")
-    print("-" * 80)
+    
     print("  # 基础依赖")
-    print("  pip install langchain-core langchain-community")
+    print("  pip install langchain-core")
+    print("  # Ollama Embeddings")
+    print("  pip install langchain-ollama")
     print("  # Chroma 向量存储（可选）")
     print("  pip install langchain-chroma")
     print()
@@ -482,9 +488,9 @@ def main() -> None:
     """
     主函数：演示向量存储的各种使用方法。
     """
-    print("=" * 80)
+    
     print("LangChain 向量存储（Vector Store）使用示例")
-    print("=" * 80)
+    
     print()
 
     # 加载环境变量
@@ -508,9 +514,9 @@ def main() -> None:
     # 示例5：完整的 RAG 工作流程
     vectorstore_rag_workflow_demo()
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
     print("\n提示：")
     print("- 向量存储是 RAG 流程的核心组件，用于存储和检索文档向量")
     print("- InMemoryVectorStore 适合小规模数据，数据存储在内存中")

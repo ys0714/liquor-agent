@@ -83,9 +83,9 @@ def main():
         })
     
     # 7. 对每个问题进行信息抽取
-    print("=" * 80)
+    
     print("彩票信息抽取任务 - Few-Shot 学习示例")
-    print("=" * 80)
+    
     print(f"\n需要抽取的字段: {schema}")
     print(f"\nFew-Shot 示例数量: {len(examples_data)}")
     print(f"待抽取的问题数量: {len(questions)}")
@@ -120,11 +120,11 @@ def main():
         except json.JSONDecodeError:
             print("(注意: 返回结果不是有效的 JSON 格式)")
         
-        print("-" * 80)
+        
     
     print("\n" + "=" * 80)
     print("任务完成！")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

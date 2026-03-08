@@ -82,9 +82,9 @@ def main():
         })
     
     # 6. 对每个文本对进行匹配判断
-    print("=" * 80)
+    
     print("文本匹配任务 - Few-Shot 学习示例")
-    print("=" * 80)
+    
     print(f"\nFew-Shot 示例数量: {len(examples_data)}")
     print(f"待判断的文本对数量: {len(test_pairs)}")
     print("\n" + "-" * 80)
@@ -124,12 +124,12 @@ def main():
         print(result)
         
         results.append(result)
-        print("-" * 80)
+        
     
     # 7. 汇总结果
     print("\n" + "=" * 80)
     print("结果汇总")
-    print("=" * 80)
+    
     print(f"\n期望结果: ['是', '不是', '是']")
     print(f"实际结果: {results}")
     
@@ -142,7 +142,7 @@ def main():
     
     print("\n" + "=" * 80)
     print("任务完成！")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

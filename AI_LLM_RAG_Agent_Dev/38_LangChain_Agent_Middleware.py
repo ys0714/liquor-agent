@@ -1,5 +1,5 @@
 """
-LangChain Agent 中间件（Middleware）示例（基于通义 ChatTongyi）
+LangChain Agent 中间件（Middleware）示例（基于 ChatOllama）
 
 本示例对应课件中关于「中间件」的图片代码，重点演示：
 
@@ -39,13 +39,13 @@ from langchain.agents.middleware import (
     wrap_tool_call,
 )
 from langgraph.runtime import Runtime
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.tools import tool
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     说明：
     - 与项目中其他示例保持一致，优先从以下环境变量中读取密钥：
@@ -61,11 +61,11 @@ def init_chat_model() -> ChatTongyi:
             "未找到 DASHSCOPE_API_KEY 或 API_KEY 环境变量，请先在 .env 或系统环境中配置后再运行。"
         )
 
-    # LangChain 的 ChatTongyi 封装会自动从环境变量中读取 key，
+    # LangChain 的 ChatOllama 封装会自动从环境变量中读取 key，
     # 这里设置一份到 DASHSCOPE_API_KEY，确保兼容性。
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -227,11 +227,11 @@ def invoke_agent_with_middleware(agent: Any, user_question: str) -> None:
     - 中间件会在 Agent 执行的各个阶段被调用
     - 可以通过打印输出观察中间件的执行顺序
     """
-    print("=" * 80)
+    
     print("【示例】LangChain Agent 中间件（Middleware）")
-    print("=" * 80)
+    
     print(f"用户问题：{user_question}")
-    print("-" * 80)
+    
 
     # 调用 Agent
     res = agent.invoke(
@@ -242,11 +242,11 @@ def invoke_agent_with_middleware(agent: Any, user_question: str) -> None:
         }
     )
 
-    print("-" * 80)
+    
     print("最终结果：")
     print("**********")
     print(res)
-    print("=" * 80)
+    
     print()
 
 
@@ -254,9 +254,9 @@ def main() -> None:
     """
     入口函数：演示 LangChain Agent 中间件的完整功能。
     """
-    print("=" * 80)
-    print("LangChain Agent 中间件（Middleware）示例（基于通义 ChatTongyi）")
-    print("=" * 80)
+    
+    print("LangChain Agent 中间件（Middleware）示例（基于 ChatOllama）")
+    
     print()
     print("中间件的作用：对智能体的每一步工作进行控制和自定义的执行")
     print()
@@ -275,7 +275,7 @@ def main() -> None:
     print("  - 转换提示词、工具选择")
     print("  - 重试、备用、提前终止等逻辑控制")
     print("  - 安全防护、个人身份检测等")
-    print("=" * 80)
+    
     print()
 
     # 创建带有中间件的 Agent
@@ -285,9 +285,9 @@ def main() -> None:
     user_question = "今天天气如何呀，如何穿衣"
     invoke_agent_with_middleware(agent, user_question)
 
-    print("=" * 80)
+    
     print("示例执行完毕，你可以根据需要修改中间件逻辑，实现更多自定义功能。")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

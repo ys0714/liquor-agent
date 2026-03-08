@@ -28,16 +28,16 @@ import os
 from typing import Any, Dict
 
 from dotenv import load_dotenv
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -54,7 +54,7 @@ def init_chat_model() -> ChatTongyi:
         )
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -83,9 +83,9 @@ def demo_temporary_session_memory_introduction() -> None:
     2. 为什么需要临时会话记忆
     3. 如何使用临时会话记忆
     """
-    print("=" * 80)
+    
     print("【示例一】临时会话记忆基本介绍")
-    print("=" * 80)
+    
 
     print("\n1. 什么是临时会话记忆：")
     print("   - 如果想要封装历史记录，除了自行维护历史消息外，")
@@ -118,14 +118,14 @@ def demo_basic_chain_without_history() -> None:
     1. 如何创建基础链
     2. 没有历史记录时的对话效果
     """
-    print("=" * 80)
+    
     print("【示例二】没有历史记录的基础链")
-    print("=" * 80)
+    
 
     # 创建模型实例
     model = init_chat_model()
     print("\n1. 创建模型实例：")
-    print("   model = ChatTongyi(model='qwen3-max')")
+    print("   model = ChatOllama(model=os.getenv('MODEL'))")
 
     # 创建提示词模板
     prompt = PromptTemplate.from_template(
@@ -146,11 +146,11 @@ def demo_basic_chain_without_history() -> None:
     # 调用链（没有历史记录）
     print("\n4. 调用链（没有历史记录）：")
     print("   res = base_chain.invoke({'input': '小明有一只猫', 'chat_history': ''})")
-    print("=" * 80)
+    
     res1 = base_chain.invoke({"input": "小明有一只猫", "chat_history": ""})
     print(f"\n✅ 第一次调用结果：")
     print(res1)
-    print("=" * 80)
+    
 
     print("\n   注意：由于没有历史记录，每次调用都需要手动传入 chat_history")
     print("   而且模型无法记住之前的对话内容")
@@ -167,9 +167,9 @@ def demo_create_history_function() -> None:
     2. get_history 函数的实现
     3. InMemoryChatMessageHistory 的使用
     """
-    print("=" * 80)
+    
     print("【示例三】创建 get_history 函数")
-    print("=" * 80)
+    
 
     print("\n1. 历史记录存储字典：")
     print("   chat_history_store = {}")
@@ -228,14 +228,14 @@ def demo_conversation_chain_with_history() -> None:
     3. 使用 RunnableWithMessageHistory 创建带历史记录的链
     4. 演示多轮对话
     """
-    print("=" * 80)
+    
     print("【示例四】使用 RunnableWithMessageHistory 创建带历史记录的对话链（完整示例）")
-    print("=" * 80)
+    
 
     # 创建模型实例
     model = init_chat_model()
     print("\n1. 创建模型实例：")
-    print("   model = ChatTongyi(model='qwen3-max')")
+    print("   model = ChatOllama(model=os.getenv('MODEL'))")
 
     # 创建提示词模板
     prompt = PromptTemplate.from_template(
@@ -291,37 +291,37 @@ def demo_conversation_chain_with_history() -> None:
 
     # 演示多轮对话
     print("\n7. 演示多轮对话：")
-    print("=" * 80)
+    
 
     print("\n【第一轮对话】")
     print("输入：'小明有一只猫'")
-    print("-" * 80)
+    
     res1 = conversation_chain.invoke(
         {"input": "小明有一只猫"}, session_config
     )
     print(f"\n✅ 第一轮对话结果：")
     print(res1)
-    print("-" * 80)
+    
 
     print("\n【第二轮对话】")
     print("输入：'小刚有两只狗'")
-    print("-" * 80)
+    
     res2 = conversation_chain.invoke(
         {"input": "小刚有两只狗"}, session_config
     )
     print(f"\n✅ 第二轮对话结果：")
     print(res2)
-    print("-" * 80)
+    
 
     print("\n【第三轮对话】")
     print("输入：'共有几只宠物？'")
-    print("-" * 80)
+    
     res3 = conversation_chain.invoke(
         {"input": "共有几只宠物？"}, session_config
     )
     print(f"\n✅ 第三轮对话结果：")
     print(res3)
-    print("=" * 80)
+    
 
     print("\n结论：")
     print("- 模型能够记住之前的对话内容")
@@ -339,9 +339,9 @@ def demo_multiple_sessions() -> None:
     1. 不同 session_id 的会话有独立的历史记录
     2. 每个会话维护自己的对话上下文
     """
-    print("=" * 80)
+    
     print("【示例五】多个会话的独立历史记录")
-    print("=" * 80)
+    
 
     # 创建模型实例
     model = init_chat_model()
@@ -377,7 +377,7 @@ def demo_multiple_sessions() -> None:
 
     # 会话1：用户001
     print("\n2. 会话1（user_001）：")
-    print("=" * 80)
+    
     session_config_1 = {"configurable": {"session_id": "user_001"}}
 
     print("\n【第一轮】输入：'我喜欢吃苹果'")
@@ -391,11 +391,11 @@ def demo_multiple_sessions() -> None:
         {"input": "我还喜欢什么水果？"}, session_config_1
     )
     print(f"结果：{res1_2[:100]}...")
-    print("=" * 80)
+    
 
     # 会话2：用户002
     print("\n3. 会话2（user_002）：")
-    print("=" * 80)
+    
     session_config_2 = {"configurable": {"session_id": "user_002"}}
 
     print("\n【第一轮】输入：'我喜欢打篮球'")
@@ -409,7 +409,7 @@ def demo_multiple_sessions() -> None:
         {"input": "我还喜欢什么运动？"}, session_config_2
     )
     print(f"结果：{res2_2[:100]}...")
-    print("=" * 80)
+    
 
     print("\n结论：")
     print("- 会话1（user_001）和会话2（user_002）有独立的历史记录")
@@ -428,9 +428,9 @@ def demo_temporary_storage_limitation() -> None:
     2. 程序重启后历史记录会丢失
     3. 适合开发和测试，不适合生产环境
     """
-    print("=" * 80)
+    
     print("【示例六】临时存储的限制")
-    print("=" * 80)
+    
 
     print("\n1. InMemoryChatMessageHistory 的特点：")
     print("   - 基于内存存储，速度快")
@@ -466,9 +466,9 @@ def main() -> None:
     5. 多个会话的独立历史记录
     6. 临时存储的限制
     """
-    print("=" * 80)
+    
     print("LangChain 临时会话记忆示例")
-    print("=" * 80)
+    
     print()
 
     # 示例一：临时会话记忆基本介绍
@@ -489,16 +489,16 @@ def main() -> None:
     # 示例六：临时存储的限制
     demo_temporary_storage_limitation()
 
-    print("=" * 80)
+    
     print("全部示例执行完毕。")
-    print("=" * 80)
+    
     print("\n总结：")
     print("1. RunnableWithMessageHistory 可以在原有链的基础上创建带有历史记录功能的新链")
     print("2. InMemoryChatMessageHistory 为历史记录提供内存存储（临时用）")
     print("3. get_history 函数用于获取指定会话ID的历史会话记录")
     print("4. 通过 session_id 区分不同的会话，每个会话维护独立的历史记录")
     print("5. 临时存储适合开发和测试，生产环境需要使用持久化存储")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

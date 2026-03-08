@@ -41,9 +41,9 @@ def document_class_demo() -> None:
     - page_content：文档内容
     - metadata：文档元数据（字典）
     """
-    print("=" * 80)
+    
     print("【示例1】Document 类的基本使用")
-    print("-" * 80)
+    
 
     # 创建一个基础的 Document 类实例
     document = Document(
@@ -66,9 +66,9 @@ def csvloader_basic_demo() -> None:
     data = loader.load()
     print(data)
     """
-    print("=" * 80)
+    
     print("【示例2】CSVLoader 基本使用 - 加载带表头的 CSV 文件")
-    print("-" * 80)
+    
 
     # 创建示例 CSV 文件（如果不存在）
     csv_file = "./stu.csv"
@@ -107,9 +107,9 @@ def csvloader_lazy_load_demo() -> None:
 
     lazy_load() 方法用于延迟流式传输文档，对大型数据集很有用，避免内存溢出。
     """
-    print("=" * 80)
+    
     print("【示例3】CSVLoader lazy_load() 方法 - 延迟流式加载")
-    print("-" * 80)
+    
 
     csv_file = "./stu.csv"
     if not os.path.exists(csv_file):
@@ -119,7 +119,7 @@ def csvloader_lazy_load_demo() -> None:
     loader = CSVLoader(file_path=csv_file)
 
     print("使用 lazy_load() 方法逐个加载文档：")
-    print("-" * 80)
+    
     for i, document in enumerate(loader.lazy_load(), start=1):
         print(f"文档 {i}:")
         print(f"  page_content: {document.page_content}")
@@ -139,9 +139,9 @@ def csvloader_custom_parsing_demo() -> None:
     - quotechar：指定字符串的引号包裹
     - fieldnames：字段列表（无表头使用，有表头勿用会读取首行做为数据）
     """
-    print("=" * 80)
+    
     print("【示例4】CSVLoader 自定义解析参数")
-    print("-" * 80)
+    
 
     # 创建一个无表头的 CSV 文件用于演示
     csv_file_no_header = "./stu_no_header.csv"
@@ -186,9 +186,9 @@ def csvloader_with_header_demo() -> None:
 
     当 CSV 文件有表头时，CSVLoader 会自动识别，不需要指定 fieldnames。
     """
-    print("=" * 80)
+    
     print("【示例5】CSVLoader 加载带表头的 CSV 文件（默认行为）")
-    print("-" * 80)
+    
 
     csv_file = "./stu.csv"
     if not os.path.exists(csv_file):
@@ -215,9 +215,9 @@ def main() -> None:
     """
     主函数：演示 CSVLoader 的各种使用方法。
     """
-    print("=" * 80)
+    
     print("LangChain CSVLoader 文档加载器示例")
-    print("=" * 80)
+    
     print()
 
     # 加载环境变量（虽然 CSVLoader 不需要 API Key，但保持一致性）
@@ -238,9 +238,9 @@ def main() -> None:
     # 示例5：带表头的 CSV 文件加载
     csvloader_with_header_demo()
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
     print("\n提示：")
     print("- 示例 CSV 文件 stu.csv 已创建在当前目录")
     print("- 可以手动编辑该文件来测试不同的 CSV 格式")

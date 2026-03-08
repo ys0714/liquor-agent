@@ -8,9 +8,9 @@ LangChain RAG（检索增强生成）完整流程示例
    - 流程：用户提问 -> 向量库检索 -> 构建提示词（用户提问 + 检索到的参考资料）-> LLM 生成回答
 
 2. 核心组件：
-   - ChatTongyi：大语言模型，用于生成回答
+   - ChatOllama：大语言模型，用于生成回答
    - InMemoryVectorStore：向量存储，用于存储和检索文档
-   - DashScopeEmbeddings：嵌入模型，用于将文本转换为向量
+   - OllamaEmbeddings：嵌入模型，用于将文本转换为向量
    - ChatPromptTemplate：提示词模板，用于构建包含上下文的提示词
    - StrOutputParser：输出解析器，用于将模型输出解析为字符串
 
@@ -33,16 +33,16 @@ LangChain RAG（检索增强生成）完整流程示例
 import os
 
 from dotenv import load_dotenv
-from langchain_community.chat_models import ChatTongyi
-from langchain_community.embeddings import DashScopeEmbeddings
+from langchain_ollama import ChatOllama
+from langchain_ollama import OllamaEmbeddings
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.vectorstores import InMemoryVectorStore
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -59,7 +59,7 @@ def init_chat_model() -> ChatTongyi:
         )
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
-    model = ChatTongyi(model= os.getenv("MODEL"))
+    model = ChatOllama(model=os.getenv("MODEL"))
     return model
 
 
@@ -67,7 +67,7 @@ def init_vector_store() -> InMemoryVectorStore:
     """
     初始化向量存储实例。
 
-    使用 DashScopeEmbeddings 作为嵌入模型，将文本转换为向量。
+    使用 OllamaEmbeddings 作为嵌入模型，将文本转换为向量。
     """
     load_dotenv()
 
@@ -79,9 +79,12 @@ def init_vector_store() -> InMemoryVectorStore:
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
-    # 初始化向量存储，使用 DashScopeEmbeddings 作为嵌入模型
+    # 初始化向量存储，使用 OllamaEmbeddings 作为嵌入模型
     vector_store = InMemoryVectorStore(
-        embedding=DashScopeEmbeddings(model="text-embedding-v4")
+        embedding=OllamaEmbeddings(
+            model=os.getenv("EMBEDDING_MODEL", "embeddinggemma:latest"),
+            base_url=os.getenv("EMBEDDING_BASE_URL"),
+        )
     )
     return vector_store
 
@@ -109,27 +112,27 @@ def rag_complete_workflow_demo() -> None:
 
     展示从向量存储初始化、数据准备、检索到生成回答的完整流程。
     """
-    print("=" * 80)
+    
     print("【示例】RAG 完整流程演示")
-    print("=" * 80)
+    
     print()
 
     # ==================== 步骤 1：初始化模型和向量存储 ====================
     print("【步骤 1】初始化模型和向量存储")
-    print("-" * 80)
+    
 
     # 初始化聊天模型
     model = init_chat_model()
-    print("✓ ChatTongyi 模型初始化成功（model='qwen3-max'）")
+    print("✓ ChatOllama 模型初始化成功")
 
     # 初始化向量存储
     vector_store = init_vector_store()
-    print("✓ InMemoryVectorStore 初始化成功（使用 DashScopeEmbeddings）")
+    print("✓ InMemoryVectorStore 初始化成功（使用 OllamaEmbeddings）")
     print()
 
     # ==================== 步骤 2：定义提示词模板 ====================
     print("【步骤 2】定义提示词模板")
-    print("-" * 80)
+    
     print("提示词结构：")
     print("  - System: 以我提供的已知参考资料为主,简洁和专业的回答用户问题。参考资料:{context}")
     print("  - User: 用户提问:{input}")
@@ -151,7 +154,7 @@ def rag_complete_workflow_demo() -> None:
 
     # ==================== 步骤 3：准备资料（向量库的数据） ====================
     print("【步骤 3】准备资料（向量库的数据）")
-    print("-" * 80)
+    
     print("add_texts 传入一个 list[str]")
     print()
 
@@ -174,14 +177,14 @@ def rag_complete_workflow_demo() -> None:
 
     # ==================== 步骤 4：用户提问 ====================
     print("【步骤 4】用户提问")
-    print("-" * 80)
+    
     input_text = "怎么减肥?"
     print(f"用户提问：{input_text}")
     print()
 
     # ==================== 步骤 5：检索向量库 ====================
     print("【步骤 5】检索向量库")
-    print("-" * 80)
+    
     print(f"查询文本：{input_text}")
     print("检索前 k=2 个最相似的文档：\n")
 
@@ -196,7 +199,7 @@ def rag_complete_workflow_demo() -> None:
 
     # ==================== 步骤 6：构建参考文本 ====================
     print("【步骤 6】构建参考文本")
-    print("-" * 80)
+    
 
     # 将检索到的文档内容拼接成参考文本
     reference_text = "["
@@ -209,7 +212,7 @@ def rag_complete_workflow_demo() -> None:
 
     # ==================== 步骤 7：构建链并调用 ====================
     print("【步骤 7】构建链并调用")
-    print("-" * 80)
+    
     print("链结构：prompt | print_prompt | model | StrOutputParser()")
     print("说明：")
     print("  - prompt: 提示词模板，接收 input 和 context 参数")
@@ -222,24 +225,24 @@ def rag_complete_workflow_demo() -> None:
     chain = prompt | print_prompt | model | StrOutputParser()
 
     print("调用链：chain.invoke({'input': input_text, 'context': reference_text})")
-    print("-" * 80)
+    
     res = chain.invoke({"input": input_text, "context": reference_text})
 
     print("\n" + "=" * 80)
     print("【最终回答】")
-    print("=" * 80)
+    
     print(res)
     print()
 
     # ==================== 流程总结 ====================
-    print("=" * 80)
+    
     print("RAG 流程总结")
-    print("=" * 80)
+    
     print("""
 完整的 RAG 流程包括以下步骤：
 
 1. 初始化阶段：
-   - 初始化聊天模型（ChatTongyi）
+   - 初始化聊天模型（ChatOllama）
    - 初始化向量存储（InMemoryVectorStore）
    - 定义提示词模板（ChatPromptTemplate）
 
@@ -271,9 +274,9 @@ def rag_workflow_without_debug_demo() -> None:
 
     这是更简洁的版本，不包含 print_prompt 调试函数。
     """
-    print("=" * 80)
+    
     print("【示例】RAG 完整流程演示（不带调试）")
-    print("=" * 80)
+    
     print()
 
     # 初始化
@@ -314,7 +317,7 @@ def rag_workflow_without_debug_demo() -> None:
 
     # 调用链
     print("执行 RAG 流程...")
-    print("-" * 80)
+    
     res = chain.invoke({"input": input_text, "context": reference_text})
 
     print("\n【用户提问】")
@@ -330,9 +333,9 @@ def rag_workflow_multiple_queries_demo() -> None:
 
     展示如何对不同的用户提问进行检索和回答。
     """
-    print("=" * 80)
+    
     print("【示例】RAG 多查询演示")
-    print("=" * 80)
+    
     print()
 
     # 初始化
@@ -371,7 +374,7 @@ def rag_workflow_multiple_queries_demo() -> None:
 
     for i, query in enumerate(queries, 1):
         print(f"【查询 {i}】{query}")
-        print("-" * 80)
+        
 
         # 检索向量库
         result = vector_store.similarity_search(query, k=2)
@@ -394,9 +397,9 @@ def main() -> None:
     2. 简洁的 RAG 流程演示（不带调试函数）
     3. 多查询演示
     """
-    print("=" * 80)
+    
     print("LangChain RAG（检索增强生成）完整流程示例")
-    print("=" * 80)
+    
     print()
 
     # 加载环境变量
@@ -406,22 +409,22 @@ def main() -> None:
     rag_complete_workflow_demo()
 
     print("\n" + "=" * 80)
-    print("=" * 80)
+    
     print()
 
     # 示例2：简洁的 RAG 流程演示（不带调试函数）
     rag_workflow_without_debug_demo()
 
     print("\n" + "=" * 80)
-    print("=" * 80)
+    
     print()
 
     # 示例3：多查询演示
     rag_workflow_multiple_queries_demo()
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
     print("\n提示：")
     print("- RAG 是结合向量检索和 LLM 生成的技术")
     print("- 通过向量存储检索相关文档，然后基于文档内容生成回答")

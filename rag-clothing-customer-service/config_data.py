@@ -30,5 +30,7 @@ separators = [
 similarity_threshold = 2
 
 # 模型配置
-embedding_model_name = "text-embedding-v4"
-chat_model_name = "qwen3-max"
+# embedding_model_name = "text-embedding-v4"
+# chat_model_name = "qwen3-max"
+embedding_model_name = "embeddinggemma:latest"
+chat_model_name = "qwen3-vl:4b"

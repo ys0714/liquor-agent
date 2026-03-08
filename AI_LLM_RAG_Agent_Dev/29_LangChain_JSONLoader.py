@@ -50,9 +50,9 @@ def jq_schema_basic_demo() -> None:
 
     对应课件中的第一个示例，展示如何从单个 JSON 对象中提取数据。
     """
-    print("=" * 80)
+    
     print("【示例1】jq_schema 基本语法 - 单个 JSON 对象")
-    print("-" * 80)
+    
 
     # 创建示例 JSON 文件
     json_file = "./stu.json"
@@ -80,7 +80,7 @@ def jq_schema_basic_demo() -> None:
 
     for jq_schema, description in schemas:
         print(f"\n{jq_schema} - {description}")
-        print("-" * 80)
+        
         try:
             loader = JSONLoader(
                 file_path=json_file,
@@ -104,9 +104,9 @@ def jsonloader_array_demo() -> None:
 
     对应课件中的第二个示例，展示如何从 JSON 数组中提取数据。
     """
-    print("=" * 80)
+    
     print("【示例2】JSONLoader - JSON 数组提取")
-    print("-" * 80)
+    
 
     # 创建示例 JSON 数组文件
     json_file = "./stus.json"
@@ -128,7 +128,7 @@ def jsonloader_array_demo() -> None:
 
     for jq_schema, description in schemas:
         print(f"\n{jq_schema} - {description}")
-        print("-" * 80)
+        
         try:
             loader = JSONLoader(
                 file_path=json_file,
@@ -152,9 +152,9 @@ def jsonloader_jsonlines_demo() -> None:
 
     对应课件中的第三个示例，展示如何使用 JSONLoader 加载 JsonLines 格式的文件。
     """
-    print("=" * 80)
+    
     print("【示例3】JSONLoader - JsonLines 格式")
-    print("-" * 80)
+    
 
     # 创建示例 JsonLines 文件
     json_lines_file = "./stu_json_lines.json"
@@ -168,7 +168,7 @@ def jsonloader_jsonlines_demo() -> None:
 
     # 使用 JSONLoader 加载 JsonLines 文件
     print("使用 JSONLoader 加载 JsonLines 文件：")
-    print("-" * 80)
+    
     loader = JSONLoader(
         file_path=json_lines_file,
         jq_schema=".",  # 提取每行的整个 JSON 对象
@@ -196,9 +196,9 @@ def jsonloader_text_content_demo() -> None:
     注意：当 jq_schema 提取的是复杂对象（字典、数组）时，必须设置 text_content=False，
     否则会报错：ValueError: Expected page_content is string, got <class 'dict'> instead.
     """
-    print("=" * 80)
+    
     print("【示例4】JSONLoader - text_content 参数区别")
-    print("-" * 80)
+    
 
     json_file = "./stu.json"
     if not os.path.exists(json_file):
@@ -207,7 +207,7 @@ def jsonloader_text_content_demo() -> None:
 
     # 对于提取简单字符串值的情况，可以使用 text_content=True
     print("\n1. text_content=True - 提取简单字符串值")
-    print("-" * 80)
+    
     print("使用 jq_schema='.name' 提取字符串字段")
     try:
         loader1 = JSONLoader(
@@ -225,7 +225,7 @@ def jsonloader_text_content_demo() -> None:
 
     # 对于提取复杂对象的情况，必须使用 text_content=False
     print("\n2. text_content=False - 提取复杂对象（字典、数组）")
-    print("-" * 80)
+    
     print("使用 jq_schema='.' 提取整个 JSON 对象")
     loader2 = JSONLoader(
         file_path=json_file,
@@ -240,7 +240,7 @@ def jsonloader_text_content_demo() -> None:
 
     # 演示错误情况：当提取字典对象但 text_content=True 时会报错
     print("\n3. 错误示例：提取字典对象但 text_content=True")
-    print("-" * 80)
+    
     print("使用 jq_schema='.' 提取整个对象，但 text_content=True（会报错）")
     try:
         loader3 = JSONLoader(
@@ -262,9 +262,9 @@ def jsonloader_lazy_load_demo() -> None:
 
     lazy_load() 方法用于延迟流式传输文档，对大型数据集很有用，避免内存溢出。
     """
-    print("=" * 80)
+    
     print("【示例5】JSONLoader lazy_load() 方法 - 延迟流式加载")
-    print("-" * 80)
+    
 
     json_lines_file = "./stu_json_lines.json"
     if not os.path.exists(json_lines_file):
@@ -279,7 +279,7 @@ def jsonloader_lazy_load_demo() -> None:
     )
 
     print("使用 lazy_load() 方法逐个加载文档：")
-    print("-" * 80)
+    
     for i, document in enumerate(loader.lazy_load(), start=1):
         print(f"文档 {i}:")
         print(f"  page_content: {document.page_content}")
@@ -296,9 +296,9 @@ def jsonloader_complex_schema_demo() -> None:
 
     展示如何提取嵌套字段、数组元素等复杂结构。
     """
-    print("=" * 80)
+    
     print("【示例6】JSONLoader - 复杂 jq_schema 用法")
-    print("-" * 80)
+    
 
     json_file = "./stu.json"
     if not os.path.exists(json_file):
@@ -342,7 +342,7 @@ def jsonloader_complex_schema_demo() -> None:
 
     for jq_schema, description in schemas:
         print(f"\n{jq_schema} - {description}")
-        print("-" * 80)
+        
         try:
             loader = JSONLoader(
                 file_path=complex_json_file,
@@ -371,9 +371,9 @@ def main() -> None:
     """
     主函数：演示 JSONLoader 的各种使用方法。
     """
-    print("=" * 80)
+    
     print("LangChain JSONLoader 文档加载器示例")
-    print("=" * 80)
+    
     print()
 
     # 加载环境变量（虽然 JSONLoader 不需要 API Key，但保持一致性）
@@ -397,9 +397,9 @@ def main() -> None:
     # 示例6：复杂 jq_schema 用法
     jsonloader_complex_schema_demo()
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
     print("\n提示：")
     print("- 示例 JSON 文件已创建在当前目录：")
     print("  - stu.json（单个对象）")

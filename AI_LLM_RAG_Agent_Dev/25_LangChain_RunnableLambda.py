@@ -27,16 +27,16 @@ import os
 from typing import Any, Dict
 
 from dotenv import load_dotenv
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.messages import AIMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnableLambda
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -53,7 +53,7 @@ def init_chat_model() -> ChatTongyi:
         )
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -66,9 +66,9 @@ def demo_runnable_lambda_introduction() -> None:
     2. 为什么需要 RunnableLambda
     3. 如何使用 RunnableLambda
     """
-    print("=" * 80)
+    
     print("【示例一】RunnableLambda 基本介绍")
-    print("=" * 80)
+    
 
     print("\n1. RunnableLambda 是什么：")
     print("   - RunnableLambda 是 LangChain 内置的类")
@@ -99,9 +99,9 @@ def demo_runnable_lambda_basic() -> None:
     2. RunnableLambda 如何将函数转换为 Runnable
     3. RunnableLambda 的输入输出
     """
-    print("=" * 80)
+    
     print("【示例二】RunnableLambda 基本用法")
-    print("=" * 80)
+    
 
     # 创建一个简单的 lambda 函数
     # 这个函数接收 AIMessage，提取 content 并包装成字典
@@ -142,9 +142,9 @@ def demo_multi_model_chain_with_runnable_lambda() -> None:
     5. 第二个模型：解析名字的含义
     6. StrOutputParser：将最终结果解析为字符串
     """
-    print("=" * 80)
+    
     print("【示例三】使用 RunnableLambda 构建多模型链（完整示例）")
-    print("=" * 80)
+    
 
     # 创建解析器实例
     str_parser = StrOutputParser()
@@ -155,7 +155,7 @@ def demo_multi_model_chain_with_runnable_lambda() -> None:
     # 创建模型实例
     model = init_chat_model()
     print(f"\n2. 创建模型实例：")
-    print(f"   model = ChatTongyi(model='qwen3-max')")
+    print(f"   model = ChatOllama(model=os.getenv('MODEL'))")
 
     # 创建 RunnableLambda 实例
     # 这个函数接收 AIMessage，提取 content 并包装成字典
@@ -197,12 +197,12 @@ def demo_multi_model_chain_with_runnable_lambda() -> None:
     # 调用链
     print("\n7. 调用链：")
     print("   res = chain.invoke({'lastname': '张', 'gender': '女儿'})")
-    print("=" * 80)
+    
     res: str = chain.invoke({"lastname": "张", "gender": "女儿"})
     print(f"\n✅ 成功！最终结果：")
     print(res)
     print(f"\n结果类型：{type(res)}")
-    print("=" * 80)
+    
     print()
 
 
@@ -215,9 +215,9 @@ def demo_direct_lambda_in_chain() -> None:
     2. 因为 Runnable 接口的 `__or__` 方法支持 Callable 接口
     3. 函数会自动转换为 RunnableLambda
     """
-    print("=" * 80)
+    
     print("【示例四】直接在链中使用 lambda 函数")
-    print("=" * 80)
+    
 
     print("\n1. 说明：")
     print("   跳过 RunnableLambda 类，直接让函数加入链也是可以的。")
@@ -234,7 +234,7 @@ def demo_direct_lambda_in_chain() -> None:
 
     print("\n2. 创建组件：")
     print("   str_parser = StrOutputParser()")
-    print("   model = ChatTongyi(model='qwen3-max')")
+    print("   model = ChatOllama(model=os.getenv('MODEL'))")
     print("   first_prompt = PromptTemplate.from_template(...)")
     print("   second_prompt = PromptTemplate.from_template(...)")
 
@@ -256,12 +256,12 @@ def demo_direct_lambda_in_chain() -> None:
     # 调用链
     print("\n4. 调用链：")
     print("   res = chain.invoke({'lastname': '张', 'gender': '女儿'})")
-    print("=" * 80)
+    
     res: str = chain.invoke({"lastname": "张", "gender": "女儿"})
     print(f"\n✅ 成功！最终结果：")
     print(res)
     print(f"\n结果类型：{type(res)}")
-    print("=" * 80)
+    
     print()
 
 
@@ -271,9 +271,9 @@ def demo_comparison_runnable_lambda_vs_direct_lambda() -> None:
 
     展示两种方式的等价性。
     """
-    print("=" * 80)
+    
     print("【示例五】RunnableLambda vs 直接使用 lambda 函数")
-    print("=" * 80)
+    
 
     # 创建组件
     str_parser = StrOutputParser()
@@ -306,16 +306,16 @@ def demo_comparison_runnable_lambda_vs_direct_lambda() -> None:
     input_data = {"lastname": "张", "gender": "女儿"}
 
     print("\n方式1 的结果：")
-    print("=" * 80)
+    
     res1 = chain1.invoke(input_data)
     print(res1)
-    print("=" * 80)
+    
 
     print("\n方式2 的结果：")
-    print("=" * 80)
+    
     res2 = chain2.invoke(input_data)
     print(res2)
-    print("=" * 80)
+    
 
     print("\n结论：")
     print("- 两种方式功能完全等价")
@@ -334,9 +334,9 @@ def demo_custom_transformation_examples() -> None:
     2. 添加额外字段
     3. 格式化输出
     """
-    print("=" * 80)
+    
     print("【示例六】更多自定义数据转换示例")
-    print("=" * 80)
+    
 
     model = init_chat_model()
     str_parser = StrOutputParser()
@@ -409,9 +409,9 @@ def main() -> None:
     5. RunnableLambda vs 直接使用 lambda 函数
     6. 更多自定义数据转换示例
     """
-    print("=" * 80)
+    
     print("LangChain RunnableLambda 自定义函数加入链示例")
-    print("=" * 80)
+    
     print()
 
     # 示例一：RunnableLambda 基本介绍
@@ -432,9 +432,9 @@ def main() -> None:
     # 示例六：更多自定义数据转换示例
     demo_custom_transformation_examples()
 
-    print("=" * 80)
+    
     print("全部示例执行完毕。")
-    print("=" * 80)
+    
     print("\n总结：")
     print("1. RunnableLambda 是 LangChain 内置的类，将函数转换为 Runnable 接口实例")
     print("2. 除了固定功能的解析器（如 JsonOutputParser），")
@@ -443,7 +443,7 @@ def main() -> None:
     print("4. Runnable 接口的 `__or__` 方法支持 Callable 接口，")
     print("   函数会自动转换为 RunnableLambda")
     print("5. RunnableLambda 提供了极大的灵活性，可以根据需求自定义任何数据转换逻辑")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

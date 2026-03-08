@@ -5,7 +5,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from langchain_community.embeddings import DashScopeEmbeddings
+from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 import config_data as config
 
@@ -26,15 +26,6 @@ def view_vector_store():
     # 加载环境变量
     load_dotenv()
     
-    # 获取 API key
-    api_key = os.getenv("DASHSCOPE_API_KEY") or os.getenv("API_KEY")
-    if not api_key:
-        print("警告: 未找到 DASHSCOPE_API_KEY 或 API_KEY 环境变量")
-        print("请先在 .env 或系统环境中配置 API key")
-        return
-    
-    os.environ["DASHSCOPE_API_KEY"] = api_key
-    
     try:
         print("=" * 80)
         print("向量库内容查看工具")
@@ -44,7 +35,10 @@ def view_vector_store():
         
         # 初始化 embedding 和向量库
         print("\n[初始化] 连接向量库...")
-        embedding = DashScopeEmbeddings(model="text-embedding-v4")
+        embedding = OllamaEmbeddings(
+            model=os.getenv("EMBEDDING_MODEL", "embeddinggemma:latest"),
+            base_url=os.getenv("EMBEDDING_BASE_URL"),
+        )
         vector_store = Chroma(
             collection_name=config.collection_name,
             embedding_function=embedding,

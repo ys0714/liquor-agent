@@ -160,13 +160,13 @@ def main():
     """
     主函数：演示余弦相似度的各种应用场景
     """
-    print("=" * 80)
+    
     print("余弦相似度算法介绍与演示")
-    print("=" * 80)
+    
     
     # 1. 基础示例：计算两个向量的余弦相似度
     print("\n【示例1：基础向量相似度计算】")
-    print("-" * 80)
+    
     
     vec_a = [1, 2, 3, 4, 5]
     vec_b = [2, 4, 6, 8, 10]  # vec_b = 2 * vec_a，方向相同，相似度为1
@@ -182,7 +182,7 @@ def main():
     
     # 2. 不同方向的向量
     print("\n【示例2：不同方向的向量】")
-    print("-" * 80)
+    
     
     vec_c = [1, 0, 0]
     vec_d = [0, 1, 0]  # 垂直向量，相似度为0
@@ -195,7 +195,7 @@ def main():
     
     # 3. 文本相似度计算
     print("\n【示例3：文本相似度计算】")
-    print("-" * 80)
+    
     
     texts = [
         "Machine learning is a subfield of artificial intelligence",
@@ -217,7 +217,7 @@ def main():
     
     # 4. 文档检索示例（模拟RAG场景）
     print("\n【示例4：文档检索示例（模拟RAG场景）】")
-    print("-" * 80)
+    
     
     # 模拟文档向量（实际应用中这些向量来自 embedding 模型）
     documents = [
@@ -252,7 +252,7 @@ def main():
     
     # 5. 向量归一化的重要性
     print("\n【示例5：向量归一化的影响】")
-    print("-" * 80)
+    
     
     vec_e = [1, 2, 3]
     vec_f = [10, 20, 30]  # 10倍缩放
@@ -270,7 +270,7 @@ def main():
     
     # 6. 实际应用场景说明
     print("\n【应用场景】")
-    print("-" * 80)
+    
     print("1. RAG系统：")
     print("   - 将查询和文档转换为向量（embedding）")
     print("   - 使用余弦相似度找到最相关的文档")
@@ -290,7 +290,7 @@ def main():
     
     print("\n" + "=" * 80)
     print("演示完成！")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

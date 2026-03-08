@@ -13,7 +13,7 @@ prompt_template = PromptTemplate.from_template(
 )
 
 prompt_text = prompt_template.format(lastname="张", gender="女儿")
-model = Tongyi(model="qwen-max")
+model = Tongyi(model= os.getenv("MODEL"))
 res = model.invoke(input=prompt_text)
 
 2）基于 chain 的写法（把 PromptTemplate 和 模型 链起来）：
@@ -22,7 +22,7 @@ prompt_template = PromptTemplate.from_template(
     "我的邻居姓{lastname}，刚生了{gender}，帮忙起名字，请简略回答。"
 )
 
-model = Tongyi(model="qwen-max")
+model = Tongyi(model= os.getenv("MODEL"))
 chain = prompt_template | model
 res = chain.invoke(input={"lastname": "曹", "gender": "女儿"})
 
@@ -58,7 +58,7 @@ def init_llm() -> Tongyi:
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
     # 与课件及其他示例保持一致，使用 qwen-max 模型
-    llm = Tongyi(model="qwen-max")
+    llm = Tongyi(model= os.getenv("MODEL"))
     return llm
 
 
@@ -85,9 +85,9 @@ def demo_standard_usage(llm: Tongyi, prompt_template: PromptTemplate) -> None:
     1. 先使用 PromptTemplate.format(...) 把变量注入，得到最终提示词文本
     2. 再把提示词文本传给 llm.invoke(...)
     """
-    print("=" * 80)
+    
     print("【示例1】标准写法：先生成提示词文本，再调用模型")
-    print("-" * 80)
+    
 
     # Step 1：通过 format 注入变量，生成最终提示词文本
     prompt_text = prompt_template.format(lastname="张", gender="女儿")
@@ -110,9 +110,9 @@ def demo_chain_usage(llm: Tongyi, prompt_template: PromptTemplate) -> None:
        - 把变量注入到模板中
        - 调用模型并返回结果
     """
-    print("=" * 80)
+    
     print("【示例2】基于 chain 的写法：PromptTemplate | LLM")
-    print("-" * 80)
+    
 
     # Step 1：把 PromptTemplate 和 LLM 通过管道符 `|` 链接起来
     chain = prompt_template | llm
@@ -133,9 +133,9 @@ def main() -> None:
     """
     主函数：演示 LangChain 中 PromptTemplate 的两种常用用法。
     """
-    print("=" * 80)
+    
     print("LangChain 通用提示词模板（PromptTemplate）用法示例")
-    print("=" * 80)
+    
 
     llm = init_llm()
     prompt_template = build_name_prompt_template()
@@ -146,9 +146,9 @@ def main() -> None:
     # 示例 2：基于 chain 的写法
     demo_chain_usage(llm, prompt_template)
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

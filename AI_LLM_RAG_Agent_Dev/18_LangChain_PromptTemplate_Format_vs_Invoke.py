@@ -27,11 +27,12 @@ from langchain_core.prompts import (
     PromptTemplate,
 )
 from langchain_community.llms.tongyi import Tongyi
+from langchain_community.llms.ollama import Ollama
 
 
-def init_llm() -> Tongyi:
+def init_llm() -> Ollama:
     """
-    初始化 Tongyi LLM 模型实例。
+    初始化 Ollama LLM 模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -45,12 +46,12 @@ def init_llm() -> Tongyi:
             "未找到 DASHSCOPE_API_KEY 或 API_KEY 环境变量，请先在 .env 或系统环境中配置后再运行。"
         )
 
-    # LangChain 的 Tongyi 封装会自动从环境变量中读取 key，
+    # LangChain 的 Ollama 封装会自动从环境变量中读取 key，
     # 这里设置一份到 DASHSCOPE_API_KEY，确保兼容性。
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
     # 与课件及其他示例保持一致，使用 qwen-max 模型
-    llm = Tongyi(model="qwen-max")
+    llm = Ollama(model= os.getenv("MODEL"))
     return llm
 
 
@@ -64,13 +65,13 @@ def build_simple_prompt_template() -> PromptTemplate:
     return PromptTemplate.from_template(template)
 
 
-def demo_prompttemplate_format_vs_invoke(llm: Tongyi) -> None:
+def demo_prompttemplate_format_vs_invoke(llm: Ollama) -> None:
     """
     使用 PromptTemplate 演示 format 与 invoke 的区别。
     """
-    print("=" * 80)
+    
     print("【部分一】PromptTemplate 中 format 与 invoke 的对比")
-    print("=" * 80)
+    
 
     prompt_template = build_simple_prompt_template()
 
@@ -125,13 +126,13 @@ def build_antonym_fewshot_prompt() -> FewShotPromptTemplate:
     return few_shot_template
 
 
-def demo_fewshot_invoke(llm: Tongyi) -> None:
+def demo_fewshot_invoke(llm: Ollama) -> None:
     """
     使用 FewShotPromptTemplate 演示 invoke(...) 的用法。
     """
     print("\n" + "=" * 80)
     print("【部分二】FewShotPromptTemplate 中 invoke 的用法")
-    print("=" * 80)
+    
 
     few_shot_template = build_antonym_fewshot_prompt()
 
@@ -153,7 +154,7 @@ def print_format_invoke_diff_table() -> None:
     """
     print("\n" + "=" * 80)
     print("【部分三】format 与 invoke 的对比总结")
-    print("=" * 80)
+    
 
     # 简易文本表格，仅用于说明。
     headers = ["维度", "format", "invoke"]
@@ -212,9 +213,9 @@ def main() -> None:
     """
     入口函数：综合演示 format 与 invoke 的差异。
     """
-    print("=" * 80)
+    
     print("LangChain PromptTemplate / FewShotPromptTemplate：format vs invoke 示例")
-    print("=" * 80)
+    
 
     llm = init_llm()
 
@@ -229,7 +230,7 @@ def main() -> None:
 
     print("\n" + "=" * 80)
     print("演示结束")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

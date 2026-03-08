@@ -14,9 +14,9 @@ LangChain RAG：向量检索如何加入链（InMemoryVectorStore 版本）
    - 整体链结构：输入问题 -> 检索器 -> 格式化文档 -> PromptTemplate -> ChatModel -> StrOutputParser
 
 3. 本示例使用的组件：
-   - ChatTongyi：大语言模型，用于生成回答
+   - ChatOllama：大语言模型，用于生成回答
    - InMemoryVectorStore：内存向量存储，适合小规模 demo
-   - DashScopeEmbeddings：嵌入模型，将文本转换为向量
+   - OllamaEmbeddings：嵌入模型，将文本转换为向量
    - ChatPromptTemplate：提示词模板，将 context 和 input 组合成提示词
    - Runnable 系列（RunnablePassthrough 等）：用来把「检索」和「LLM 调用」串成一条链
    - StrOutputParser：输出解析器，将模型输出解析为字符串
@@ -31,8 +31,8 @@ import os
 from typing import List
 
 from dotenv import load_dotenv
-from langchain_community.chat_models import ChatTongyi
-from langchain_community.embeddings import DashScopeEmbeddings
+from langchain_ollama import ChatOllama
+from langchain_ollama import OllamaEmbeddings
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -40,9 +40,9 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.vectorstores import InMemoryVectorStore
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -59,7 +59,7 @@ def init_chat_model() -> ChatTongyi:
         )
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
-    model = ChatTongyi(model= os.getenv("MODEL"))
+    model = ChatOllama(model=os.getenv("MODEL"))
     return model
 
 
@@ -67,7 +67,7 @@ def init_vector_store() -> InMemoryVectorStore:
     """
     初始化 InMemoryVectorStore 向量存储实例。
 
-    使用 DashScopeEmbeddings 作为嵌入模型，将文本转换为向量。
+    使用 OllamaEmbeddings 作为嵌入模型，将文本转换为向量。
     """
     load_dotenv()
 
@@ -80,7 +80,10 @@ def init_vector_store() -> InMemoryVectorStore:
     os.environ["DASHSCOPE_API_KEY"] = api_key
 
     vector_store = InMemoryVectorStore(
-        embedding=DashScopeEmbeddings(model="text-embedding-v4")
+        embedding=OllamaEmbeddings(
+            model=os.getenv("EMBEDDING_MODEL", "embeddinggemma:latest"),
+            base_url=os.getenv("EMBEDDING_BASE_URL"),
+        )
     )
     return vector_store
 
@@ -148,7 +151,7 @@ def build_rag_chain_with_retriever():
           │         └── format_docs：把文档列表转成字符串
           │
           ├─> ChatPromptTemplate（把 context 和 input 注入到提示词）
-          ├─> ChatTongyi 模型
+          ├─> ChatOllama 模型
           └─> StrOutputParser（解析为字符串）
     """
     # 1. 初始化模型和向量存储
@@ -198,9 +201,9 @@ def rag_retriever_chain_demo() -> None:
         - 33 号：similarity_search 在链外手动调用
         - 本示例：retriever 直接在链内完成检索，输入只需要给一个问题字符串即可
     """
-    print("=" * 80)
+    
     print("【示例】RAG：向量检索加入链（InMemoryVectorStore + retriever）")
-    print("=" * 80)
+    
     print()
 
     # 构建 RAG 链（内部已经初始化模型、构建向量存储并写入数据）
@@ -215,7 +218,7 @@ def rag_retriever_chain_demo() -> None:
 
     for i, question in enumerate(questions, start=1):
         print(f"【问题 {i}】{question}")
-        print("-" * 80)
+        
 
         # 这里直接把 str 问题传给链，链内部会自动：
         #   问题 -> retriever 检索 -> format_docs -> Prompt -> Model -> Parser
@@ -225,9 +228,9 @@ def rag_retriever_chain_demo() -> None:
         print(answer)
         print()
 
-    print("=" * 80)
+    
     print("示例说明")
-    print("=" * 80)
+    
     print(
         """
 在这个示例中，向量检索不再是「链外的一次函数调用」，而是正式成为链中的一个步骤：

@@ -8,7 +8,7 @@
    - a | b 会调用 a.__or__(b)
    - (a | b) | c 会继续调用 MySequence.__or__(c)
    - 自定义类只要实现 __or__，就可以控制「|」运算的行为
-2. LangChain 示例：说明 ChatPromptTemplate 和 ChatTongyi 也是通过重写「|」来实现链式调用
+2. LangChain 示例：说明 ChatPromptTemplate 和 ChatOllama 也是通过重写「|」来实现链式调用
    - chat_prompt_template | chat 本质是创建了一个 RunnableSequence（可运行的链）
    - chain.invoke(...) / chain.stream(...) 就是对这个「链对象」发起调用
 """
@@ -19,7 +19,7 @@ import os
 from typing import Any, Iterable, List
 
 from dotenv import load_dotenv
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.base import RunnableSerializable
 
@@ -106,9 +106,9 @@ def demo_pure_operator_overload() -> None:
     """
     演示「a | b | c」是如何通过 __or__ 魔法方法一步步计算得到的。
     """
-    print("=" * 80)
+    
     print("【示例一】纯 Python 运算符重写：a | b | c")
-    print("=" * 80)
+    
 
     a = Test("a")
     b = Test("b")
@@ -128,9 +128,9 @@ def demo_pure_operator_overload() -> None:
 # =========================
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     与 20 号示例保持一致：
     - 优先从 DASHSCOPE_API_KEY / API_KEY 环境变量中读取密钥
@@ -145,7 +145,7 @@ def init_chat_model() -> ChatTongyi:
         )
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -169,13 +169,13 @@ def build_demo_chat_prompt_template() -> ChatPromptTemplate:
     return chat_prompt_template
 
 
-def demo_langchain_chain_operator(chat: ChatTongyi) -> None:
+def demo_langchain_chain_operator(chat: ChatOllama) -> None:
     """
     演示在 LangChain 中，「chat_prompt_template | chat」是如何生成一个链对象的。
     """
-    print("=" * 80)
+    
     print("【示例二】LangChain 运算符重写：chat_prompt_template | chat")
-    print("=" * 80)
+    
 
     chat_prompt_template = build_demo_chat_prompt_template()
 
@@ -211,9 +211,9 @@ def main() -> None:
     chat = init_chat_model()
     demo_langchain_chain_operator(chat)
 
-    print("=" * 80)
+    
     print("全部示例执行完毕。你现在可以把这段逻辑与课件上的图片对照理解。")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

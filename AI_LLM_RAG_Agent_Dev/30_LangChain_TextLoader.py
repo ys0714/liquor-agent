@@ -102,9 +102,9 @@ def textloader_basic_demo() -> None:
 
     展示如何使用 TextLoader 加载文本文件。
     """
-    print("=" * 80)
+    
     print("【示例1】TextLoader 基本用法")
-    print("-" * 80)
+    
     
     # 创建示例文本文件
     text_file = create_sample_text_file()
@@ -112,7 +112,7 @@ def textloader_basic_demo() -> None:
     
     # 使用 TextLoader 加载文本文件
     print("使用 TextLoader 加载文本文件：")
-    print("-" * 80)
+    
     loader = TextLoader(
         text_file,
         encoding="utf-8",  # 指定文件编码
@@ -121,7 +121,7 @@ def textloader_basic_demo() -> None:
     
     print(f"成功加载 {len(docs)} 个文档")
     print(f"\n文档内容预览（前 200 个字符）：")
-    print("-" * 80)
+    
     if docs:
         content_preview = docs[0].page_content[:200]
         print(content_preview + "...")
@@ -136,9 +136,9 @@ def recursive_character_splitter_basic_demo() -> None:
 
     展示如何使用 RecursiveCharacterTextSplitter 分割文档。
     """
-    print("=" * 80)
+    
     print("【示例2】RecursiveCharacterTextSplitter 基本用法")
-    print("-" * 80)
+    
     
     # 加载文档
     text_file = "./data/Python_Basics.txt"
@@ -169,7 +169,7 @@ def recursive_character_splitter_basic_demo() -> None:
     
     print(f"分割后得到 {len(split_docs)} 个文档块\n")
     print("前 3 个文档块内容：")
-    print("-" * 80)
+    
     for i, doc in enumerate(split_docs[:3], start=1):
         print(f"\n【文档块 {i}】")
         print(f"长度：{len(doc.page_content)} 个字符")
@@ -184,9 +184,9 @@ def recursive_character_splitter_parameters_demo() -> None:
 
     展示 chunk_size、chunk_overlap 和 separators 参数的影响。
     """
-    print("=" * 80)
+    
     print("【示例3】RecursiveCharacterTextSplitter 参数对比")
-    print("-" * 80)
+    
     
     # 加载文档
     text_file = "./data/Python_Basics.txt"
@@ -233,7 +233,7 @@ def recursive_character_splitter_parameters_demo() -> None:
     for config in configurations:
         print(f"\n配置：{config['name']}")
         print(f"  chunk_size={config['chunk_size']}, chunk_overlap={config['chunk_overlap']}")
-        print("-" * 80)
+        
         
         splitter = RecursiveCharacterTextSplitter(
             chunk_size=config["chunk_size"],
@@ -263,9 +263,9 @@ def recursive_character_splitter_separators_demo() -> None:
 
     展示分隔符优先级对分割结果的影响。
     """
-    print("=" * 80)
+    
     print("【示例4】RecursiveCharacterTextSplitter - separators 参数影响")
-    print("-" * 80)
+    
     
     # 加载文档
     text_file = "./data/Python_Basics.txt"
@@ -303,7 +303,7 @@ def recursive_character_splitter_separators_demo() -> None:
     for config in separator_configs:
         print(f"\n分隔符配置：{config['name']}")
         print(f"  separators: {config['separators']}")
-        print("-" * 80)
+        
         
         splitter = RecursiveCharacterTextSplitter(
             chunk_size=300,
@@ -328,9 +328,9 @@ def textloader_encoding_demo() -> None:
 
     展示不同编码对文件加载的影响。
     """
-    print("=" * 80)
+    
     print("【示例5】TextLoader - encoding 参数")
-    print("-" * 80)
+    
     
     # 创建不同编码的测试文件
     test_files = []
@@ -343,7 +343,7 @@ def textloader_encoding_demo() -> None:
     test_files.append(("UTF-8", utf8_file, "utf-8"))
     
     print("测试不同编码的文件加载：")
-    print("-" * 80)
+    
     
     for encoding_name, file_path, encoding in test_files:
         print(f"\n编码：{encoding_name}")
@@ -367,9 +367,9 @@ def splitter_metadata_demo() -> None:
 
     展示分割器如何保留和更新文档元数据。
     """
-    print("=" * 80)
+    
     print("【示例6】文档分割后的元数据")
-    print("-" * 80)
+    
     
     # 加载文档
     text_file = "./data/Python_Basics.txt"
@@ -397,7 +397,7 @@ def splitter_metadata_demo() -> None:
     
     print(f"分割后得到 {len(split_docs)} 个文档块\n")
     print("前 3 个文档块的元数据：")
-    print("-" * 80)
+    
     for i, doc in enumerate(split_docs[:3], start=1):
         print(f"\n文档块 {i}：")
         print(f"  元数据：{doc.metadata}")
@@ -410,9 +410,9 @@ def main() -> None:
     """
     主函数：演示 TextLoader 和 RecursiveCharacterTextSplitter 的各种使用方法。
     """
-    print("=" * 80)
+    
     print("LangChain TextLoader 和文档分割器示例")
-    print("=" * 80)
+    
     print()
 
     # 加载环境变量（虽然 TextLoader 不需要 API Key，但保持一致性）
@@ -436,9 +436,9 @@ def main() -> None:
     # 示例6：文档分割后的元数据
     splitter_metadata_demo()
 
-    print("=" * 80)
+    
     print("演示结束")
-    print("=" * 80)
+    
     print("\n提示：")
     print("- 示例文本文件已创建在 ./data/Python_Basics.txt")
     print("- RecursiveCharacterTextSplitter 是 LangChain 官方推荐的默认字符分割器")

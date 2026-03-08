@@ -18,15 +18,15 @@ import os
 from typing import Any
 
 from dotenv import load_dotenv
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableSequence
 from langchain_core.runnables.base import Runnable, RunnableSerializable
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -43,7 +43,7 @@ def init_chat_model() -> ChatTongyi:
         )
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -51,11 +51,11 @@ def demo_runnable_inheritance() -> None:
     """
     演示 LangChain 核心组件的继承关系。
 
-    展示 ChatPromptTemplate 和 ChatTongyi 都继承自 Runnable 基类。
+    展示 ChatPromptTemplate 和 ChatOllama 都继承自 Runnable 基类。
     """
-    print("=" * 80)
+    
     print("【示例一】Runnable 基类继承关系")
-    print("=" * 80)
+    
 
     # 创建 ChatPromptTemplate 实例
     prompt = ChatPromptTemplate.from_messages(
@@ -65,7 +65,7 @@ def demo_runnable_inheritance() -> None:
         ]
     )
 
-    # 创建 ChatTongyi 实例
+    # 创建 ChatOllama 实例
     chat = init_chat_model()
 
     # 检查继承关系
@@ -76,14 +76,14 @@ def demo_runnable_inheritance() -> None:
     for i, cls in enumerate(prompt.__class__.__mro__[:5], 1):  # 只显示前5个
         print(f"      {i}. {cls.__name__}")
 
-    print("\n2. ChatTongyi 的继承关系：")
+    print("\n2. ChatOllama 的继承关系：")
     print(f"   - isinstance(chat, Runnable): {isinstance(chat, Runnable)}")
     print(f"   - isinstance(chat, RunnableSerializable): {isinstance(chat, RunnableSerializable)}")
     print(f"   - chat 的 MRO（方法解析顺序）:")
     for i, cls in enumerate(chat.__class__.__mro__[:5], 1):  # 只显示前5个
         print(f"      {i}. {cls.__name__}")
 
-    print("\n结论：ChatPromptTemplate 和 ChatTongyi 都继承自 Runnable 基类，")
+    print("\n结论：ChatPromptTemplate 和 ChatOllama 都继承自 Runnable 基类，")
     print("因此它们都支持通过 __or__ 方法进行链式组合。")
     print()
 
@@ -97,9 +97,9 @@ def demo_or_operator_basic() -> None:
     - 返回的是 RunnableSequence 类型
     - RunnableSequence 是 RunnableSerializable 的子类
     """
-    print("=" * 80)
+    
     print("【示例二】__or__ 运算符的基本使用：chain = prompt | model")
-    print("=" * 80)
+    
 
     # 创建组件
     prompt = ChatPromptTemplate.from_messages(
@@ -144,9 +144,9 @@ def demo_or_operator_chaining() -> None:
     - 链式调用可以无限扩展
     - 每次使用「|」都会创建一个新的 RunnableSequence
     """
-    print("=" * 80)
+    
     print("【示例三】链式使用「|」运算符：继续添加组件")
-    print("=" * 80)
+    
 
     # 创建组件
     prompt = ChatPromptTemplate.from_messages(
@@ -198,9 +198,9 @@ def demo_or_operator_implementation() -> None:
     - 接受另一个 Runnable 或可转换为 Runnable 的对象
     - 返回 RunnableSequence(steps=[self, coerce_to_runnable(other)])
     """
-    print("=" * 80)
+    
     print("【示例四】__or__ 方法的实现原理（模拟）")
-    print("=" * 80)
+    
 
     print("\nRunnable 基类中的 __or__ 方法签名（简化版）：")
     print("""
@@ -262,9 +262,9 @@ def main() -> None:
     3. 展示链式使用「|」运算符
     4. 展示 __or__ 方法的实现原理
     """
-    print("=" * 80)
+    
     print("LangChain Runnable 抽象基类与 __or__ 运算符重写示例")
-    print("=" * 80)
+    
     print()
 
     # 示例一：Runnable 基类继承关系
@@ -279,15 +279,15 @@ def main() -> None:
     # 示例四：__or__ 方法的实现原理
     demo_or_operator_implementation()
 
-    print("=" * 80)
+    
     print("全部示例执行完毕。")
-    print("=" * 80)
+    
     print("\n总结：")
     print("1. LangChain 中的绝大多数核心组件都继承了 Runnable 抽象基类")
     print("2. chain = prompt | model 返回的是 RunnableSequence 类型")
     print("3. 这是因为 Runnable 基类内部对 __or__ 魔术方法进行了改写")
     print("4. 继续使用「|」添加新组件，依旧会得到 RunnableSequence，这就是链的基础架构")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":

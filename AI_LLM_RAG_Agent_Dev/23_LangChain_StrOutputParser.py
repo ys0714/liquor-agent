@@ -28,15 +28,15 @@ import os
 from typing import Any
 
 from dotenv import load_dotenv
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 from langchain_core.messages import AIMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 
 
-def init_chat_model() -> ChatTongyi:
+def init_chat_model() -> ChatOllama:
     """
-    初始化 ChatTongyi 聊天模型实例。
+    初始化 ChatOllama 聊天模型实例。
 
     优先从以下环境变量中读取密钥（依次回退）：
     - DASHSCOPE_API_KEY（阿里云官方推荐）
@@ -53,7 +53,7 @@ def init_chat_model() -> ChatTongyi:
         )
 
     os.environ["DASHSCOPE_API_KEY"] = api_key
-    chat = ChatTongyi(model= os.getenv("MODEL"))
+    chat = ChatOllama(model=os.getenv("MODEL"))
     return chat
 
 
@@ -64,9 +64,9 @@ def demo_error_scenario() -> None:
     这个示例会展示为什么直接连接两个 model 会报错。
     注意：为了演示错误，这里会捕获异常并展示错误信息。
     """
-    print("=" * 80)
+    
     print("【示例一】错误的链式调用：prompt | model | model")
-    print("=" * 80)
+    
 
     # 创建提示词模板（与课件中的示例一致）
     prompt = PromptTemplate.from_template(
@@ -116,9 +116,9 @@ def demo_str_output_parser_basic() -> None:
     2. StrOutputParser 如何将 AIMessage 转换为字符串
     3. StrOutputParser 是 Runnable 的子类，可以加入链
     """
-    print("=" * 80)
+    
     print("【示例二】StrOutputParser 基本用法")
-    print("=" * 80)
+    
 
     # 创建 StrOutputParser 实例
     parser = StrOutputParser()
@@ -150,9 +150,9 @@ def demo_correct_chain_with_parser() -> None:
 
     这是课件中展示的解决方案，使用 StrOutputParser 进行类型转换。
     """
-    print("=" * 80)
+    
     print("【示例三】正确的链式调用：prompt | model | parser | model")
-    print("=" * 80)
+    
 
     # 创建提示词模板（与课件中的示例一致）
     prompt = PromptTemplate.from_template(
@@ -185,7 +185,7 @@ def demo_correct_chain_with_parser() -> None:
 
     # 调用完整链
     print("\n调用完整链：chain.invoke({'lastname': '张', 'gender': '女儿'})")
-    print("=" * 80)
+    
     res = chain.invoke({"lastname": "张", "gender": "女儿"})
     print(f"\n✅ 成功！第二个模型的输出：")
     print(res.content)
@@ -199,9 +199,9 @@ def demo_chain_components_analysis() -> None:
 
     帮助理解为什么需要 StrOutputParser 进行类型转换。
     """
-    print("=" * 80)
+    
     print("【示例四】链中各组件的输入输出类型分析")
-    print("=" * 80)
+    
 
     prompt = PromptTemplate.from_template("测试：{text}")
     model = init_chat_model()
@@ -215,7 +215,7 @@ def demo_chain_components_analysis() -> None:
     print(f"   - 实际输出类型：{type(prompt_result)}")
 
     # 分析 model 的输入输出
-    print("\n2. ChatTongyi 模型组件：")
+    print("\n2. ChatOllama 模型组件：")
     print("   - 输入类型：LanguageModelInput")
     print("     (即 PromptValue | str | Sequence[MessageLikeRepresentation])")
     print("   - 输出类型：AIMessage")
@@ -247,9 +247,9 @@ def demo_practical_use_case() -> None:
 
     场景：第一个模型生成名字，第二个模型对名字进行评价。
     """
-    print("=" * 80)
+    
     print("【示例五】实际应用场景：两阶段模型调用")
-    print("=" * 80)
+    
 
     # 第一个提示词：生成名字
     name_prompt = PromptTemplate.from_template(
@@ -285,7 +285,7 @@ def demo_practical_use_case() -> None:
     # 或者使用一个完整的链
     print("\n" + "-" * 80)
     print("或者，使用一个完整的链：")
-    print("-" * 80)
+    
     full_chain = name_prompt | model | parser | review_prompt | model
     print("\n完整链：name_prompt | model | parser | review_prompt | model")
     print("执行完整链：")
@@ -305,9 +305,9 @@ def main() -> None:
     4. 分析链中各组件的输入输出类型
     5. 演示实际应用场景
     """
-    print("=" * 80)
+    
     print("LangChain StrOutputParser 字符串输出解析器示例")
-    print("=" * 80)
+    
     print()
 
     # 示例一：错误的链式调用场景
@@ -325,9 +325,9 @@ def main() -> None:
     # 示例五：实际应用场景
     demo_practical_use_case()
 
-    print("=" * 80)
+    
     print("全部示例执行完毕。")
-    print("=" * 80)
+    
     print("\n总结：")
     print("1. 当需要将第一个模型的输出作为第二个模型的输入时，")
     print("   不能直接使用 prompt | model | model，因为类型不匹配")
@@ -335,7 +335,7 @@ def main() -> None:
     print("   可以将 AIMessage 解析为简单的字符串")
     print("3. StrOutputParser 是 Runnable 的子类，可以加入链中")
     print("4. 正确的写法：chain = prompt | model | parser | model")
-    print("=" * 80)
+    
 
 
 if __name__ == "__main__":
