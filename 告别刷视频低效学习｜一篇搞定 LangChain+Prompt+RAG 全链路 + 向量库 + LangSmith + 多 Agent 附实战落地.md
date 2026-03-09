@@ -2022,7 +2022,7 @@ import os
 # 开启LangChain链路追踪，用于调试/监控RAG流程的执行过程
 os.environ["LANGCHAIN_TRACING_V2"]="true"
 os.environ["LANGCHAIN_ENDPOINT"]="https://api.smith.langchain.com"
-os.environ["LANGCHAIN_API_KEY"]="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"
+os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY", "")  # 从环境变量读取，避免提交密钥
 os.environ["LANGCHAIN_PROJECT"]="agent_v1"
 
 # ======================== assign机制基础示例（注释说明核心用法） ========================
@@ -2688,7 +2688,7 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true"
 # LangSmith的API端点
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 # LangSmith的API密钥（替换为自己的）
-os.environ["LANGCHAIN_API_KEY"] = "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"
+
 # 项目名称（用于在LangSmith中区分不同项目）
 os.environ["LANGCHAIN_PROJECT"] = "agent_v1"
 
@@ -2836,7 +2836,7 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 # 3. LangSmith的API密钥（核心，替换为自己的密钥，在LangSmith平台获取）
 #    作用：鉴权，确认当前调用归属的账号/项目
-os.environ["LANGCHAIN_API_KEY"] = "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"
+
 # 4. LangSmith的项目名称（自定义）
 #    作用：在LangSmith平台按项目分类查看追踪数据，便于多项目管理
 os.environ["LANGCHAIN_PROJECT"] = "agent_v1"
@@ -2971,7 +2971,7 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true"
 # LangChain Smith的API端点地址
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 # LangChain Smith的API密钥（用于身份验证）
-os.environ["LANGCHAIN_API_KEY"] = "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"
+
 # 定义当前项目名称，方便在LangChain Smith后台分类查看
 os.environ["LANGCHAIN_PROJECT"] = "agent_v1"
 
@@ -3191,7 +3191,7 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true"
 # LangChain Smith的官方API端点地址，用于上传运行数据
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 # LangChain Smith的API密钥，用于身份验证（确保只有授权用户能上传/查看数据）
-os.environ["LANGCHAIN_API_KEY"] = "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"
+
 # 定义当前项目名称，方便在LangChain Smith后台分类管理和查询
 os.environ["LANGCHAIN_PROJECT"] = "agent_v1"
 
@@ -3352,7 +3352,7 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true"
 # LangChain Smith的官方API端点地址，用于上传智能体运行数据
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 # LangChain Smith的API密钥，用于身份验证（确保只有授权用户能上传/查看运行数据）
-os.environ["LANGCHAIN_API_KEY"] = "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"
+
 # 定义当前项目名称，方便在LangChain Smith后台分类管理、查询和对比不同版本智能体
 os.environ["LANGCHAIN_PROJECT"] = "llm_agent_v1"
 
